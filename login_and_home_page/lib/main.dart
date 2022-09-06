@@ -8,12 +8,14 @@ Future<void> main() async {
   final sharedPref = await SharedPreferences.getInstance();
   final savedData = sharedPref.getString('saved_data');
   print(savedData);
-  runApp(MaterialApp(
-    home: savedData != null ? const HomePage() :  LoginPage(),
-    theme: ThemeData(
-      primarySwatch: Colors.grey,
+  runApp(
+    MaterialApp(
+      home: savedData != null ? const HomePage() : LoginPage(),
+      theme: ThemeData(
+        primarySwatch: Colors.grey,
+      ),
     ),
-  ),);
+  );
 }
 
 

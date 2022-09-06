@@ -9,39 +9,57 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 212, 208, 208),
-      appBar: AppBar(title:  const Text('Home'),backgroundColor:const Color.fromARGB(55, 98, 219, 198),actions:  [
-        IconButton(
-          icon: const Icon(Icons.logout_rounded),
-          tooltip: 'Log Out',
-          onPressed: (){
-            clearData();
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginPage()));
+      appBar: AppBar(
+        title: const Text('Home'),
+        backgroundColor: const Color.fromARGB(55, 98, 219, 198),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.logout_rounded),
+              tooltip: 'Log Out',
+              onPressed: () {
+                clearData();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              })
+        ],
+      ),
+      body: ListView.separated(
+        itemBuilder: (context, index) {
+          if (index.isEven) {
+            return ListTile(
+              leading: const CircleAvatar(
+                  backgroundImage: AssetImage('images/pattiser.jpeg'),
+                  radius: 30),
+              subtitle: Text(
+                'List $index',
+                style: const TextStyle(color: Colors.black, fontSize: 18),
+              ),
+            );
+          } else {
+            return ListTile(
+              leading: Image.asset('images/pattiser2.jpg'),
+              subtitle: Text(
+                'List $index',
+                style: const TextStyle(color: Colors.black, fontSize: 18),
+              ),
+            );
           }
-        )
-      ],),
-      body: ListView.separated(itemBuilder: ( context,  index){
-        if(index.isEven){
-          return  ListTile(
-            leading: const CircleAvatar(backgroundImage: AssetImage('images/pattiser.jpeg'),radius:30),
-            subtitle: Text('List $index',style: const TextStyle(color: Colors.black,fontSize: 18),),
+        },
+        separatorBuilder: (context, index) {
+          return const Divider(
+            thickness: .4,
           );
-        } 
-        else{
-          return  ListTile(
-            leading: Image.asset('images/pattiser2.jpg'),
-            subtitle: Text('List $index',style: const TextStyle(color: Colors.black,fontSize: 18),),
-          );
-        }
-      }, separatorBuilder: ( context,  index){
-        return const Divider(thickness: .4,);
-      }, itemCount: 20,
-      physics: const AlwaysScrollableScrollPhysics(),
+        },
+        itemCount: 20,
+        physics: const AlwaysScrollableScrollPhysics(),
       ),
     );
   }
 }
 
-Future<void> clearData() async{
+Future<void> clearData() async {
   SharedPreferences sharedPref = await SharedPreferences.getInstance();
   sharedPref.remove('saved_data');
 }
