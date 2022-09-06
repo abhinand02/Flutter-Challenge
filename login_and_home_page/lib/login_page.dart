@@ -3,17 +3,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginPage extends StatelessWidget {
+   LoginPage({super.key});
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   // final TextEditingController _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  Map<String, String> emailAndPassword = {
+
+  final Map<String, String> emailAndPassword = {
        "email": "abhinandmadhu08@gmail.com",
        "Password": "Abhinand"
   };
@@ -26,7 +22,6 @@ class _LoginPageState extends State<LoginPage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // const SizedBox(height: 100,),
             Column(
               children: const [
                 Text(
@@ -38,7 +33,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ],
             ),
-            // const SizedBox(height: 100,),
             Form(
               key: _formKey,
               child: Column(
@@ -74,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                               if (value != emailAndPassword['email']) {
                                 return "enter a valid email";
                               } else {
-                                saveData(value!);
+                                saveData(value);
                                 return null;
                               }
                             }),
@@ -160,12 +154,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  
-
-Future<void> saveData(String email) async{
+Future<void> saveData(email) async{
   // print(email);
   final sharedPref =await SharedPreferences.getInstance();
   await sharedPref.setString('saved_data', email);
 }
-
 }

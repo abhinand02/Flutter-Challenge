@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
           tooltip: 'Log Out',
           onPressed: (){
             clearData();
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginPage()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginPage()));
           }
         )
       ],),
@@ -45,6 +45,9 @@ Future<void> clearData() async{
   SharedPreferences sharedPref = await SharedPreferences.getInstance();
   sharedPref.remove('saved_data');
 }
+
+
+
 
 // class RoundedImg extends StatelessWidget {
 //    RoundedImg({

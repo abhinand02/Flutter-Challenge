@@ -4,12 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'login_page.dart';
 
 Future<void> main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   final sharedPref = await SharedPreferences.getInstance();
   final savedData = sharedPref.getString('saved_data');
   print(savedData);
   runApp(MaterialApp(
-    home: savedData != null ? const HomePage() : const LoginPage(),
+    home: savedData != null ? const HomePage() :  LoginPage(),
     theme: ThemeData(
       primarySwatch: Colors.grey,
     ),
