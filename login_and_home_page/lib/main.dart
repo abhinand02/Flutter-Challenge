@@ -7,15 +7,15 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final sharedPref = await SharedPreferences.getInstance();
   final savedData = sharedPref.getString('saved_data');
-  print(savedData);
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: savedData != null ? const HomePage() : LoginPage(),
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
     ),
-  );
+  );  
 }
 
 
