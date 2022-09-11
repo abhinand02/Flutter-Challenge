@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_and_home_page/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:login_and_home_page/constants/styles.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -38,11 +39,8 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.logout_rounded),
             tooltip: 'Log Out',
             onPressed: () {
-              clearData();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
+              logoutUser(context);
+             
             })
       ],
     );
@@ -68,6 +66,49 @@ class HomePage extends StatelessWidget {
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
           );
+  }
+
+  logoutUser(BuildContext ctx) async {
+    return showDialog(
+      context: ctx,
+      builder: (ctx1) {
+        return AlertDialog(
+          content: Text(
+            'Are you sure to Logout?',
+            style: popupHeading,
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: Text(
+                    'Cancel',
+                    style: buttonTextStyle,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    clearData();
+                     Navigator.pushReplacement(
+                ctx,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
+                  },
+                  child: Text(
+                    'Yes',
+                    style: buttonTextStyle,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
