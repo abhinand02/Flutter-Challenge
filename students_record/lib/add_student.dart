@@ -6,6 +6,7 @@ import 'db/db.dart';
 import 'db/functions/db_functions.dart';
 
 int count = 1;
+// String imagePath = 'images/default_person_img.png';
 
 class AddStudentPage extends StatefulWidget {
   const AddStudentPage({super.key});
@@ -41,18 +42,20 @@ class _AddStudentPageState extends State<AddStudentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            profileImage(),
-            inPutField(hintText: 'Student Name', controller: nameController),
-            inPutField(hintText: 'Phone Number', controller: phnNumberController),
-            inPutField(hintText: 'Class', controller: classController),
-            inPutField(hintText: 'Age', controller: ageController),
-            addDetailsButton(context),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              profileImage(),
+              inPutField(hintText: 'Student Name', controller: nameController),
+              inPutField(hintText: 'Phone Number', controller: phnNumberController),
+              inPutField(hintText: 'Class', controller: classController),
+              inPutField(hintText: 'Age', controller: ageController),
+              addDetailsButton(context),
+            ],
+          ),
         ),
       ),
     );
@@ -120,9 +123,6 @@ class _AddStudentPageState extends State<AddStudentPage> {
     final age = ageController.text;
     final id = count;
     count++;
-    if(image ==null){
-      return;
-    }
     if (name.isEmpty || age.isEmpty || phnNumber.isEmpty || sclass.isEmpty) {
       null;
     } else {

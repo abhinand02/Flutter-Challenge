@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:image_picker/image_picker.dart';
@@ -5,8 +7,9 @@ import 'package:students_record/constants/styles.dart';
 import 'db/db.dart';
 import 'db/functions/db_functions.dart';
 
+
 class StudentDetails extends StatefulWidget {
-  
+  // String imagePath = 'images/default_person_img.png';
   final String name;
   final String sclass;
   final String phnNumber;
@@ -27,14 +30,13 @@ class StudentDetails extends StatefulWidget {
 }
 
 class _StudentDetailsState extends State<StudentDetails> {
-    Uint8List? _image;
+     Uint8List? _image;
   Future<void> imagePick() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if(image == null){
       return;
     }
     final temp = await image.readAsBytes();
-
 
     print('printing file format image  $temp');
     setState(() {
@@ -166,7 +168,7 @@ class _StudentDetailsState extends State<StudentDetails> {
     var sclass = classController.text;
     var phnNumber = phnNumberController.text;
     var age = ageController.text;
-    final image = 'images/pattiser.jpeg';
+     _image ??= widget.image;
 
     if (name.isEmpty || age.isEmpty || phnNumber.isEmpty || sclass.isEmpty) {
       if (name.isEmpty) {

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import "package:flutter/material.dart";
 import 'package:students_record/add_student.dart';
 import 'package:students_record/constants/styles.dart';
@@ -38,6 +36,14 @@ class _StudentsRecordState extends State<StudentsRecord> {
         style: whiteColor,
       ),
       centerTitle: true,
+      actions: [
+        IconButton(
+          onPressed: () {
+            showSearch(context: context, delegate: MySearchDelegete(),);
+          },
+          icon: const Icon(Icons.search),
+        )
+      ],
     );
   }
 
@@ -68,7 +74,7 @@ class _StudentsRecordState extends State<StudentsRecord> {
                       if (data.image == null) {
                         return;
                       }
-                      // print(data.image);
+                      print(data.image);
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => StudentDetails(
@@ -149,3 +155,106 @@ class _StudentsRecordState extends State<StudentsRecord> {
     );
   }
 }
+
+class MySearchDelegete extends SearchDelegate{
+  @override
+  Widget? buildLeading(BuildContext context)=> IconButton(icon: const  Icon(Icons.arrow_back), onPressed: ()=>close(context, null),);
+
+  @override
+  List<Widget>? buildActions(BuildContext context)=> [
+    IconButton(onPressed: (){
+      if(query.isEmpty){
+        close(context, null);
+      }else{
+        query='';
+      }
+    }, icon: const Icon(Icons.clear),)
+  ];
+
+  @override
+  Widget buildResults(BuildContext context)=> Container();
+
+  @override
+  Widget buildSuggestions(BuildContext context){
+    return searchSuggetions(context);
+  }
+
+  Widget searchSuggetions(BuildContext context){
+    // getAllStudents();
+   return ValueListenableBuilder(valueListenable: studentListNotifier, builder: (BuildContext ctx, List<StudentModel> studentList, Widget? child){
+      return ListView.builder(itemCount:studentList.length,itemBuilder: (context, index) {
+      final data = studentList[index];
+      return ListTile(
+                  onTap: () {
+                    if (data.image == null) {
+                      return;
+                    }
+                    // print(data.image);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => StudentDetails(
+                          id: data.id!,
+                          name: data.name,
+                          age: data.age,
+                          phnNumber: data.phnnumber,
+                          sclass: data.standard,
+                          image: data.image!,
+                        ),
+                      ),
+                    );
+                  },
+                  leading: CircleAvatar(
+                    backgroundImage:
+                        data.image != null ? MemoryImage(data.image!) : null,
+                    radius: 30,
+                  ),
+                  title: Text(data.name),
+                  subtitle: Text("class: ${data.standard}"),
+                );
+    });;
+    });
+    }
+    
+  }
+
+
+//  ValueListenableBuilder(
+//         valueListenable: studentListNotifier,
+//         builder: (BuildContext ctx, List<StudentModel> studentList,
+//             Widget? child) {
+//           return ListView.separated(
+//               itemBuilder: (ctx, index) {
+//                 final data = studentList[index];
+//                 return ListTile(
+//                   onTap: () {
+//                     if (data.image == null) {
+//                       return;
+//                     }
+//                     // print(data.image);
+//                     Navigator.of(context).push(
+//                       MaterialPageRoute(
+//                         builder: (context) => StudentDetails(
+//                           id: data.id!,
+//                           name: data.name,
+//                           age: data.age,
+//                           phnNumber: data.phnnumber,
+//                           sclass: data.standard,
+//                           image: data.image!,
+//                         ),
+//                       ),
+//                     );
+//                   },
+//                   leading: CircleAvatar(
+//                     backgroundImage:
+//                         data.image != null ? MemoryImage(data.image!) : null,
+//                     radius: 30,
+//                   ),
+//                   title: Text(data.name),
+//                   subtitle: Text("class: ${data.standard}"),
+//                 );
+//               },
+//               separatorBuilder: (ctx, index) {
+//                 return const Divider();
+//               },
+//               itemCount: studentList.length);
+//         }),
