@@ -1,15 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:students_record/constants/styles.dart';
 import 'db/db.dart';
 import 'db/functions/db_functions.dart';
 
-
 class StudentDetails extends StatefulWidget {
-  // String imagePath = 'images/default_person_img.png';
   final String name;
   final String sclass;
   final String phnNumber;
@@ -27,9 +24,10 @@ class StudentDetails extends StatefulWidget {
 
   @override
   State<StudentDetails> createState() => _StudentDetailsState();
-}
-
+}    String?  names;
 class _StudentDetailsState extends State<StudentDetails> {
+
+   String imagePath = 'images/default_person_img.png';
      Uint8List? _image;
   Future<void> imagePick() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -40,10 +38,17 @@ class _StudentDetailsState extends State<StudentDetails> {
 
     print('printing file format image  $temp');
     setState(() {
-      this._image = temp;
+      _image = temp;
     });
   }
-  TextEditingController nameController = TextEditingController();
+  Future<void> getSudentById(int id) async{
+   final studentDb = await Hive.openBox<StudentModel>('student_db');
+   final data = studentDb.get(id);
+     names = data!.name;
+
+    print('id is $names');
+  }
+     TextEditingController nameController = TextEditingController(text: names);
 
   TextEditingController phnNumberController = TextEditingController();
 
@@ -54,41 +59,44 @@ class _StudentDetailsState extends State<StudentDetails> {
   bool textEdit = true;
   @override
   Widget build(BuildContext context) {
+    getSudentById(widget.id);
     return Scaffold(
+      appBar: appBar(),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            profileImage(),
-            const SizedBox(
-              height: 20,
-            ),
-            inPutField(
-                formfieldheading: 'Student Name',
-                controller: nameController,
-                text: widget.name),
-            inPutField(
-                formfieldheading: 'Phone Number',
-                controller: phnNumberController,
-                text: widget.phnNumber),
-            inPutField(
-                formfieldheading: 'Class',
-                controller: classController,
-                text: widget.sclass),
-            inPutField(
-                formfieldheading: 'Age',
-                controller: ageController,
-                text: widget.age),
-            editFormButtons(context)
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              profileImage(),
+              const SizedBox(
+                height: 20,
+              ),
+              inPutField(
+                  formfieldheading: 'Student Name',
+                  controller: nameController,
+                  text: widget.name),
+              inPutField(
+                  formfieldheading: 'Phone Number',
+                  controller: phnNumberController,
+                  text: widget.phnNumber),
+              inPutField(
+                  formfieldheading: 'Class',
+                  controller: classController,
+                  text: widget.sclass),
+              inPutField(
+                  formfieldheading: 'Age',
+                  controller: ageController,
+                  text: widget.age),
+              editFormButtons(context)
+            ],
+          ),
         ),
       ),
     );
   }
-
   Padding editFormButtons(BuildContext context) {
     return Padding(
       padding: horizontalPadding20,
@@ -129,6 +137,16 @@ class _StudentDetailsState extends State<StudentDetails> {
     );
   }
 
+  AppBar appBar() {
+    return AppBar(
+      title: Text(
+        'Edit Details',
+        style: whiteColor,
+      ),
+      centerTitle: true,
+    );
+  }
+
   Padding inPutField(
       {required String formfieldheading,
       required TextEditingController controller,
@@ -146,7 +164,7 @@ class _StudentDetailsState extends State<StudentDetails> {
             controller: controller,
             readOnly: textEdit,
             decoration: InputDecoration(
-                hintText: text,
+                // hintText: text,
                 suffixIcon: IconButton(
                   onPressed: () {
                     setState(() {

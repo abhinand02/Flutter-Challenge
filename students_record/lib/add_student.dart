@@ -5,8 +5,7 @@ import 'package:students_record/constants/styles.dart';
 import 'db/db.dart';
 import 'db/functions/db_functions.dart';
 
-int count = 1;
-// String imagePath = 'images/default_person_img.png';
+String imagePath = 'images/default_person_img.png';
 
 class AddStudentPage extends StatefulWidget {
   const AddStudentPage({super.key});
@@ -41,6 +40,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: appBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -82,15 +82,32 @@ class _AddStudentPageState extends State<AddStudentPage> {
       ),
     );
   }
-
+  AppBar appBar() {
+    return AppBar(
+      title: Text(
+        'Add Student',
+        style: whiteColor,
+      ),
+      centerTitle: true,
+    );
+  }
   GestureDetector profileImage() {
     return GestureDetector(
       onTap: imagePcik,
-      child: CircleAvatar(
-        backgroundImage: image != null ? Image.memory
-        (image!).image : null,
-        radius: 60,
+      child: Column(
+        children: [
+          CircleAvatar(
+            backgroundImage: image != null ? Image.memory
+            (image!).image : AssetImage(imagePath),
+            radius: 60,
+          ),
+          Padding(
+            padding: verticalPadding10,
+            child: Text('Profile Image',style: buttonTextStyle,),
+          )
+        ],
       ),
+      
     );
   }
 
@@ -121,13 +138,14 @@ class _AddStudentPageState extends State<AddStudentPage> {
     final sclass = classController.text;
     final phnNumber = phnNumberController.text;
     final age = ageController.text;
-    final id = count;
-    count++;
+    // final id = count;
+    // count++;
     if (name.isEmpty || age.isEmpty || phnNumber.isEmpty || sclass.isEmpty) {
+      validation(context);
       null;
     } else {
       final student = StudentModel(
-          name: name, age: age, phnnumber: phnNumber, standard: sclass, id: id,image: image);
+          name: name, age: age, phnnumber: phnNumber, standard: sclass,image: image);
           print(image);
       addStudent(student);
       addStudentDetail(context);
@@ -150,6 +168,9 @@ class _AddStudentPageState extends State<AddStudentPage> {
                 children: [
                   TextButton(
                       onPressed: () {
+                        setState(() {
+                          image = null;
+                        });
                         Navigator.of(context).pop();
                       },
                       child: const Text('Add More Details'),),
@@ -165,5 +186,43 @@ class _AddStudentPageState extends State<AddStudentPage> {
           );
         },
         );
+  }
+  validation(BuildContext ctx) async {
+    return showDialog(
+      context: ctx,
+      builder: (ctx1) {
+        return AlertDialog(
+          content: Text(
+            'Enter All Fields!',
+            style: popupHeading,
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'Cancel',
+                    style: buttonTextStyle,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'Ok',
+                    style: buttonTextStyle,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 }

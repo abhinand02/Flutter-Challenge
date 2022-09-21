@@ -3,8 +3,7 @@ import 'package:hive_flutter/adapters.dart';
 part 'db.g.dart';
 
 @HiveType(typeId: 1)
-class StudentModel{
-
+class StudentModel {
   @HiveField(0)
   final String name;
 
@@ -18,10 +17,16 @@ class StudentModel{
   final String standard;
 
   @HiveField(4)
-   int? id;
+  int? id;
 
-   @HiveField(5)
-   final Uint8List? image;
+  @HiveField(5)
+  late final Uint8List? image;
 
-  StudentModel( {this.image, required this.name, required this.age, required this.phnnumber, required this.standard,this.id});
+  StudentModel(
+      {this.image,
+      required this.name,
+      required this.age,
+      required this.phnnumber,
+      required this.standard,
+      this.id});
 }

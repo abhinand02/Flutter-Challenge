@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:students_record/add_student.dart';
 import 'package:students_record/constants/styles.dart';
 import 'package:students_record/db/db.dart';
@@ -39,7 +40,10 @@ class _StudentsRecordState extends State<StudentsRecord> {
       actions: [
         IconButton(
           onPressed: () {
-            showSearch(context: context, delegate: MySearchDelegete(),);
+            showSearch(
+              context: context,
+              delegate: MySearchDelegete(),
+            );
           },
           icon: const Icon(Icons.search),
         )
@@ -51,7 +55,7 @@ class _StudentsRecordState extends State<StudentsRecord> {
     return FloatingActionButton(
       onPressed: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => AddStudentPage()));
+            context, MaterialPageRoute(builder: (context) =>const AddStudentPage()));
       },
       child: const Icon(
         Icons.person_add_alt_rounded,
@@ -93,7 +97,10 @@ class _StudentsRecordState extends State<StudentsRecord> {
                           data.image != null ? MemoryImage(data.image!) : null,
                       radius: 30,
                     ),
-                    title: Text(data.name),
+                    title: Text(
+                      data.name,
+                      style: buttonTextStyle,
+                    ),
                     subtitle: Text("class: ${data.standard}"),
                     trailing: IconButton(
                       onPressed: () {
@@ -156,35 +163,59 @@ class _StudentsRecordState extends State<StudentsRecord> {
   }
 }
 
-class MySearchDelegete extends SearchDelegate{
+class MySearchDelegete extends SearchDelegate {
   @override
-  Widget? buildLeading(BuildContext context)=> IconButton(icon: const  Icon(Icons.arrow_back), onPressed: ()=>close(context, null),);
+  Widget? buildLeading(BuildContext context) => IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => close(context, null),
+      );
 
   @override
-  List<Widget>? buildActions(BuildContext context)=> [
-    IconButton(onPressed: (){
-      if(query.isEmpty){
-        close(context, null);
-      }else{
-        query='';
-      }
-    }, icon: const Icon(Icons.clear),)
-  ];
+  List<Widget>? buildActions(BuildContext context) => [
+        IconButton(
+          onPressed: () {
+            if (query.isEmpty) {
+              close(context, null);
+            } else {
+              query = '';
+            }
+          },
+          icon: const Icon(Icons.clear),
+        )
+      ];
 
   @override
-  Widget buildResults(BuildContext context)=> Container();
-
-  @override
-  Widget buildSuggestions(BuildContext context){
-    return searchSuggetions(context);
+  Widget buildResults(BuildContext context) {
+    return Center(
+      child: Text(query),
+    );
   }
 
-  Widget searchSuggetions(BuildContext context){
-    // getAllStudents();
-   return ValueListenableBuilder(valueListenable: studentListNotifier, builder: (BuildContext ctx, List<StudentModel> studentList, Widget? child){
-      return ListView.builder(itemCount:studentList.length,itemBuilder: (context, index) {
-      final data = studentList[index];
-      return ListTile(
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    Box<StudentModel> studentBox = Hive.box<StudentModel>('student_db');
+
+    List<StudentModel> student = studentBox.values.toList();
+
+    final searchItem = query.isEmpty
+        ? student
+        : student
+            .where(
+              (element) => element.name.toLowerCase().contains(
+                    query.toLowerCase().toString(),
+                  ),
+            )
+            .toList();
+    return searchSuggetions(context,searchItem);
+  }
+
+  Widget searchSuggetions(BuildContext context,List<StudentModel> searchItem) {
+    getAllStudents();
+          return ListView.builder(
+              itemCount: searchItem.length,
+              itemBuilder: (context, index) {
+                final data = searchItem[index];
+                return ListTile(
                   onTap: () {
                     if (data.image == null) {
                       return;
@@ -208,15 +239,25 @@ class MySearchDelegete extends SearchDelegate{
                         data.image != null ? MemoryImage(data.image!) : null,
                     radius: 30,
                   ),
-                  title: Text(data.name),
+                  title: Text(data.name,style: buttonTextStyle,),
                   subtitle: Text("class: ${data.standard}"),
                 );
-    });;
-    });
-    }
-    
+              });
+        }
   }
 
+//  class SearchFinder extends StatelessWidget {
+//   final String query;
+//   const SearchFinder({super.key, required this.query});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final studentDb =  Hive.openBox<StudentModel>('student_db');
+//     return ValueListenableBuilder(valueListenable: Hive.openBox<StudentModel>('student_db'), builder: (context,studentDb,_){
+//        var result = query.isEmpty ? 
+//     });
+//   }
+// }
 
 //  ValueListenableBuilder(
 //         valueListenable: studentListNotifier,
