@@ -1,7 +1,7 @@
 import 'dart:io';
 
 void main(List<String> args) {
-  List array1=[],array2=[];
+  List? array1=[],array2=[];
   int i;
   print('enter the limit of the array');
   int? n= int.parse(stdin.readLineSync()!);

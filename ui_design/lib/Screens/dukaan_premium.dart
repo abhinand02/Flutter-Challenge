@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:ui_design/constants/styles.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class DukaanPremiumPage extends StatelessWidget {
+class DukaanPremiumPage extends StatefulWidget {
   const DukaanPremiumPage({super.key});
+
+  @override
+  State<DukaanPremiumPage> createState() => _DukaanPremiumPageState();
+}
+
+class _DukaanPremiumPageState extends State<DukaanPremiumPage> {
+   final  videoURL ='https://youtu.be/id1E0lqnUtY';
+
+ late YoutubePlayerController _controller;
+
+ @override
+  void initState() {
+    final videoID = YoutubePlayer.convertUrlToId(videoURL);
+
+    _controller = YoutubePlayerController(initialVideoId: videoID!,
+    flags:const YoutubePlayerFlags(
+      autoPlay: false,
+    ));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +69,12 @@ class DukaanPremiumPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   margin: const
                   EdgeInsets.only(left: 20,right: 20),
-                  child:const SizedBox(
-                    width: 400,
-                    height: 200,
-                    child: Image(image: AssetImage('assets/images/images.png',),fit: BoxFit.contain,),
-                  ),
-                )
+                  child: SizedBox(
+                    // width: 400,
+                    // height: 200,
+                    child: YoutubePlayer(controller: _controller,showVideoProgressIndicator: true,),)
+                ),
+                height20
           ],
         ),
       ),

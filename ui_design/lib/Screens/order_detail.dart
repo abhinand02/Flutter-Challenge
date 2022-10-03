@@ -105,7 +105,7 @@ Row receiptheading() {
           style: TextStyle(
             fontSize: 18,
           ),
-        ))
+        ),)
   ]);
 }
 
