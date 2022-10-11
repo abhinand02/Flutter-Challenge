@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:music_player/Model/model.dart';
 import 'package:music_player/constants/style.dart';
 import 'Splash Screen/splashscreen.dart';
 
-void main() {
+Future<void> main() async{
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(SongsAdapter());
+  await Hive.openBox<Songs>('Songs');
   runApp(const MyApp());
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/style.dart';
 
+
 AppBar appBar( String title,[IconButton? backButton]) {
     return AppBar(
       leading: backButton,
@@ -31,3 +32,4 @@ AppBar appBar( String title,[IconButton? backButton]) {
               ],
               );
   }
+

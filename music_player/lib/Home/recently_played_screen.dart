@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/widgets/method.dart';
 import '../constants/style.dart';
+import 'home_screen.dart';
 
 class RecentlyPlayedScreen extends StatelessWidget {
   const RecentlyPlayedScreen({super.key});
@@ -10,6 +11,7 @@ class RecentlyPlayedScreen extends StatelessWidget {
     return  Scaffold(
       body:
            ListView.builder(
+            padding:  EdgeInsets.only(top: 10, bottom: playerVisibility ? 70 : 0),
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               return ListTile(

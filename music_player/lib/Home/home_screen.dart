@@ -1,13 +1,45 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_player/Home/mostly_played_screen.dart';
 import 'package:music_player/Home/recently_played_screen.dart';
+import 'package:music_player/Model/model.dart';
 import 'package:music_player/constants/style.dart';
+import 'package:music_player/player/player.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import '../widgets/method.dart';
 import '../widgets/mini_player.dart';
 import 'artist_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+  bool playerVisibility = false;
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final box = SongBox.getInstance();
+  List<Audio> allSongs = [];
+
+  final AssetsAudioPlayer _audioPlayer = AssetsAudioPlayer.withId('0');
+
+  @override
+  void initState() {
+    super.initState();
+    List<Songs> dbSongs = box.values.toList();
+
+    for (var item in dbSongs) {
+      allSongs.add(Audio.file(item.songurl,
+          metas: Metas(
+              artist: item.artist,
+              title: item.songname,
+              id: item.id.toString(),),),);
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -20,31 +52,71 @@ class HomeScreen extends StatelessWidget {
           child: appBar(height),
         ),
         body: TabBarView(physics: const BouncingScrollPhysics(), children: [
-          ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return ListTile(
-                leading: const Image(
-                    image: AssetImage('assets/images/music-removebg.png')),
-                title:
-                 Text(
-                    'Strangers By Nature',
-                    style: textWhite18,
-                  ),
-                subtitle: Text(
-                  'Adele',
-                  style: TextStyle(color: unSelectedItemClr),
-                ),
-                trailing: favPlayListIcons(),
-              );
-            },
-            itemCount: 10,
-          ),
+          ValueListenableBuilder<Box<Songs>>(
+              valueListenable: box.listenable(),
+              builder: (context, Box<Songs> allboxsong, child) {
+                List<Songs> allDbSongs = allboxsong.values.toList();
+                if (allDbSongs.isEmpty) {
+
+                  // print(allDbSongs);
+
+                  return const Center(
+                    child: Text('No Songs Found!'),
+                  );
+                }
+                return ListView.builder(
+                  padding:  EdgeInsets.only(top: 10, bottom: playerVisibility ? 70 : 0),
+                  physics: const BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    Songs songs = allDbSongs[index];
+                    return ListTile(
+                      onTap: () {
+                        _audioPlayer.open(
+                          Playlist(audios: allSongs, startIndex: index),
+                          showNotification: true,
+                        );
+                        setState(() {
+                          playerVisibility = true;
+                          isPlaying = true;
+                        });
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const MusicPlayerScreen();
+                        }));
+                      },
+                      leading: QueryArtworkWidget(
+                        artworkBorder: BorderRadius.circular(15),
+                        artworkHeight: 90,
+                        artworkWidth: 60,
+                        id: songs.id,
+                        type: ArtworkType.AUDIO,
+                        artworkFit: BoxFit.cover,
+                        nullArtworkWidget:
+                            ClipRRect(borderRadius: BorderRadius.circular(15),
+                              child: Image.asset('assets/images/music.png',width: 60,height: 90,fit: BoxFit.cover,)),
+                      ),
+                      title: Text(
+                        songs.songname,
+                        style: textWhite18,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        songs.artist,
+                        style: TextStyle(color: unSelectedItemClr),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: favPlayListIcons(),
+                    );
+                  },
+                  itemCount: allDbSongs.length,
+                );
+              }),
           Artist(width: width),
           const RecentlyPlayedScreen(),
           const MostlyPlayedScreen(),
         ]),
-        bottomSheet: const MiniPlayer(),
+        bottomSheet:
+            Visibility(visible: playerVisibility, child: const MiniPlayer()),
       ),
     );
   }
@@ -88,3 +160,4 @@ Padding tabbarTitle({required String title}) {
     child: Text(title, style: text18),
   );
 }
+

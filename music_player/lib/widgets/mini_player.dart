@@ -1,6 +1,11 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:music_player/Home/home_screen.dart';
 import 'package:music_player/constants/style.dart';
 import 'package:music_player/player/player.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+
+bool isPlaying = false;
 
 class MiniPlayer extends StatefulWidget {
   const MiniPlayer({super.key});
@@ -9,76 +14,96 @@ class MiniPlayer extends StatefulWidget {
   State<MiniPlayer> createState() => _MiniPlayerState();
 }
 
-bool playing = true;
-
 class _MiniPlayerState extends State<MiniPlayer> {
+  AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return const MusicPlayerScreen();
-              },
+    return player.builderCurrent(
+      builder: (context, playing) {
+        return GestureDetector(
+          onHorizontalDragEnd: (DragEndDetails details) {
+            if (details.primaryVelocity! > 0) {
+              player.previous();
+            } else if (details.primaryVelocity! < 0) {
+              player.next();
+            }
+          },
+          onTap: () {
+            {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const MusicPlayerScreen();
+                  },
+                ),
+              );
+            }
+          },
+          child: Container(
+            color: miniPlayerclr,
+            width: double.infinity,
+            height: 70,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: QueryArtworkWidget(
+                    id: int.parse(playing.audio.audio.metas.id!), // image
+                    type: ArtworkType.AUDIO,
+                    artworkFit: BoxFit.fill,
+                    artworkHeight: 75,
+                    artworkWidth: 60,
+                    artworkBorder: BorderRadius.circular(15),
+                    nullArtworkWidget: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Image.asset(
+                          'assets/images/music.png',
+                          fit: BoxFit.cover,
+                          width: 65,
+                          height: 75,
+                        )),
+                  ),
+                  trailing: PlayerBuilder.isPlaying(
+                      // Play/Pause button
+                      player: player,
+                      builder: (context, isPlaying) {
+                        return IconButton(
+                          icon: Icon(isPlaying
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded),
+                          color: selectedItemColor,
+                          iconSize: 35,
+                          onPressed: () {
+                            player.playOrPause();
+                          },
+                          padding: EdgeInsets.zero,
+                          splashRadius: 40,
+                        );
+                      }),
+                  title: Container(
+                      // title
+                      margin: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        player.getCurrentAudioTitle,
+                        style: TextStyle(
+                          color: whiteClr,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      )),
+                  subtitle: Padding(
+                    //artist
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Text(
+                      player.getCurrentAudioArtist,
+                      style: TextStyle(color: greyclr),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          );
-        }
+          ),
+        );
       },
-      child: Container(
-        color: miniPlayerclr,
-        width: double.infinity,
-        height: 70,
-        child: Column(
-          children: [
-            ListTile(
-              leading: Container(
-                width: 70,
-                height: 75,
-                margin: const EdgeInsets.only(top: 5),
-                child: const Image(
-                  image: AssetImage('assets/images/music.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              trailing: IconButton(
-                icon: playing
-                    ? const Icon(
-                        Icons.pause,
-                      )
-                    : const Icon(
-                        Icons.play_arrow_rounded,
-                      ),
-                color: selectedItemColor,
-                iconSize: 35,
-                onPressed: () {
-                  setState(() {
-                    if (playing == true) {
-                      playing = false;
-                    } else {
-                      playing = true;
-                    }
-                  });
-                },
-              ),
-              title: Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Text(
-                    'Edhir Neechal Adi',
-                    style: TextStyle(color: whiteClr),
-                  )),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: Text(
-                  'Anirudh Musical',
-                  style: TextStyle(color: greyclr),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -1,9 +1,26 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/constants/style.dart';
 import 'package:music_player/widgets/method.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import '../player/player.dart';
+import '../widgets/mini_player.dart';
+import 'home_screen.dart';
 
-class SongsByArtistScreen extends StatelessWidget {
-  const SongsByArtistScreen({super.key});
+class SongsByArtistScreen extends StatefulWidget {
+
+  final String artistName;
+  final int artistId;
+  const SongsByArtistScreen({super.key, required this.artistName, required this.artistId});
+
+  @override
+  State<SongsByArtistScreen> createState() => _SongsByArtistScreenState();
+}
+
+class _SongsByArtistScreenState extends State<SongsByArtistScreen> {
+ final  OnAudioQuery fetchArtistSongs = OnAudioQuery();
+ final AssetsAudioPlayer _audioPlayer = AssetsAudioPlayer.withId('0');
+  int  itemId = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +48,7 @@ class SongsByArtistScreen extends StatelessWidget {
               bottom: 10,
               left: 20,
               child: Text(
-                'Amir Tataloo',
+                widget.artistName.split(',')[0].toString(),
                 style: TextStyle(
                     fontSize: 30, fontWeight: FontWeight.bold, color: whiteClr),
               ),
@@ -39,26 +56,55 @@ class SongsByArtistScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: ListView.builder(
+      body: FutureBuilder<List<SongModel>>(future: fetchArtistSongs.queryAudiosFrom(AudiosFromType.ARTIST_ID, widget.artistId,sortType: SongSortType.TITLE,orderType: OrderType.ASC_OR_SMALLER),builder: (context, item){
+        return ListView.builder(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(top: 10),
         itemBuilder: (context, index) {
+          List<Audio> songsByArtists = [];
+          for(var songs in item.data!){
+            itemId = songs.id;
+           songsByArtists.add(Audio.file(songs.uri.toString(),metas: Metas(title: songs.title,artist: songs.artist,id: songs.id.toString())));
+          }
           return ListTile(
-            leading: const Image(
-                image: AssetImage('assets/images/music-removebg.png')),
+            onTap: () {
+                        _audioPlayer.open(
+                          Playlist(audios: songsByArtists, startIndex: index),
+                          showNotification: true,
+                        );
+                          playerVisibility = true;
+                          isPlaying = true;
+                         const HomeScreen();
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const MusicPlayerScreen();
+                        },),);
+                      },
+            leading: QueryArtworkWidget(
+                        artworkBorder: BorderRadius.circular(15),
+                        artworkHeight: 90,
+                        artworkWidth: 60,
+                        id: itemId,
+                        type: ArtworkType.AUDIO,
+                        artworkFit: BoxFit.cover,
+                        nullArtworkWidget:
+                            ClipRRect(borderRadius: BorderRadius.circular(15),
+                              child: Image.asset('assets/images/music.png',width: 60,height: 90,fit: BoxFit.cover,)),
+                      ),
             title: Text(
-              'Strangers By Nature',
+              songsByArtists[index].metas.title.toString(),
               style: textWhite18,
             ),
             subtitle: Text(
-              'Adele',
-              style: TextStyle(color: unSelectedItemClr),
+              songsByArtists[index].metas.artist.toString(),
+              style: TextStyle(color: unSelectedItemClr),overflow: TextOverflow.ellipsis,
             ),
             trailing: favPlayListIcons(),
           );
         },
-        itemCount: 10,
-      ),
+        itemCount: item.data!.length,
+      );
+      },)
     );
   }
 }

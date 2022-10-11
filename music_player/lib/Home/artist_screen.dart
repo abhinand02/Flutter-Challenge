@@ -1,8 +1,11 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import '../constants/style.dart';
+import 'home_screen.dart';
 import 'songs_by_artists.dart';
 
-class Artist extends StatelessWidget {
+class Artist extends StatefulWidget {
   const Artist({
     Key? key,
     required this.width,
@@ -11,101 +14,93 @@ class Artist extends StatelessWidget {
   final double width;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: ListView.separated(
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: ((ctx1, index) {
-              return artistListTile(context);
-            }),
-            separatorBuilder: (context, index) {
-              return const SizedBox(
-                height: 10,
-              );
-            },
-            itemCount: 5,
-          ),
-        )
-      ],
-    );
+  State<Artist> createState() => _ArtistState();
+}
+
+List<ArtistModel> artistList = [];
+
+class _ArtistState extends State<Artist> {
+  final AssetsAudioPlayer _audioPlayer = AssetsAudioPlayer();
+  OnAudioQuery fetchartist = OnAudioQuery();
+  late int newIndex;
+  int count = 0;
+  int count1 = 1;
+
+  @override
+  void initState() {
+    getArtist();
+    super.initState();
   }
 
-  Row artistListTile(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Column(
-          children: [
-            const SizedBox(
-              height: 15,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return const SongsByArtistScreen();
-                }));
-              },
-              child: Container(
-                padding: const EdgeInsets.only(top: 20, bottom: 10),
-                width: width / 2.7,
-                height: width / 2.3,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(15)),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: const Image(
-                      image: AssetImage('assets/images/music.png'),
-                      fit: BoxFit.cover,
-                    )),
-              ),
-            ),
-            Text(
-              'Artist Name',
-              style: textWhite18,
-            ),
-            Text(
-              'No. of Songs',
-              style: textgrey18,
-            )
-          ],
-        ),
-        Column(
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return const SongsByArtistScreen();
-                }));
-              },
-              child: Container(
-                padding: const EdgeInsets.only(top: 20, bottom: 10),
-                width: width / 2.7,
-                height: width / 2.3,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(15)),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: const Image(
-                      image: AssetImage('assets/images/music.png'),
-                      fit: BoxFit.cover,
-                    )),
-              ),
-            ),
-            Text(
-              'Artist Name',
-              style: textWhite18,
-            ),
-            Text(
-              'No. of Songs',
-              style: textgrey18,
-            )
-          ],
-        ),
-      ],
-    );
+ void getArtist() async {
+    artistList = await fetchartist.queryArtists();
+
+    for (var items in artistList) {
+      artistList.add(items);
+    }
   }
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<ArtistModel>>(
+      future: fetchartist.queryArtists(),
+      builder: (context, item) {
+        if (item.data == null) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (item.data!.isEmpty) {
+          return Center(
+            child: Text(
+              'No Artist Found!',
+              style: textWhite22,
+            ),
+          );
+        }
+        return GridView.builder(
+          padding:  EdgeInsets.only(top: 10, bottom: playerVisibility ? 70 : 0),
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: (1),
+            ),
+            itemCount: artistList.length - 1,
+            itemBuilder: (BuildContext context, int index) {
+              return Column(children: [
+                GestureDetector(
+                  onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return  SongsByArtistScreen(artistId:artistList[index].id, artistName :artistList[index].artist);
+                }));
+              },
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 10,left: 20,right: 20),
+                    color: backGroundColor,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          'assets/images/music.png',
+                          fit: BoxFit.cover,
+                        ),),
+                  ),
+                ),
+                Text(
+        artistList[index]
+            .artist
+            .split(',')[0]
+            .toString(),
+        style: textWhite18,
+      ),
+                Text(
+              'Songs ${artistList[index].numberOfTracks.toString()} ',
+              style: textgrey18,
+            ),
+              ]);
+            });
+      },
+    );
+}
 }

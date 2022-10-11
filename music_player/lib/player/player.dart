@@ -1,20 +1,28 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/constants/style.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import '../widgets/player_icons.dart';
 
-class MusicPlayerScreen extends StatelessWidget {
+class MusicPlayerScreen extends StatefulWidget {
   const MusicPlayerScreen({super.key});
 
+  @override
+  State<MusicPlayerScreen> createState() => _MusicPlayerScreenState();
+}
+
+class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: appBar(height,context),                                        //appbar 
+      appBar: appBar(height, context), //appbar
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SongDetails(width: width),                                //Thumbnail,total time, elapsed time
-          const PlayerIcons()],                                     //Icons - play/Pause, next, previous,shuffle, repeat
+          SongDetails(width: width), //Thumbnail,total time, elapsed time
+          const PlayerIcons()
+        ], //Icons - play/Pause, next, previous,shuffle, repeat
       ),
     );
   }
@@ -24,9 +32,13 @@ class MusicPlayerScreen extends StatelessWidget {
       preferredSize: Size.fromHeight(height / 8),
       child: AppBar(
         elevation: 0,
-        leading:  IconButton(icon:const Icon(Icons.arrow_back_ios_new_rounded),onPressed: (){
-          Navigator.of(context).pop();
-        },splashRadius: 25,),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          splashRadius: 25,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.favorite_outline_rounded),
@@ -44,7 +56,8 @@ class MusicPlayerScreen extends StatelessWidget {
   }
 }
 
-class SongDetails extends StatelessWidget {
+class SongDetails extends StatefulWidget {
+
   const SongDetails({
     Key? key,
     required this.width,
@@ -53,107 +66,77 @@ class SongDetails extends StatelessWidget {
   final double width;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: width - 100,
-              width: width - 100,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: const Image(
-                      image: AssetImage('assets/images/Frame 38.png'))),
-            ),
-          ],
-        ),
-        height20,
-        Text(
-          'Edhir Neechal Adi',
-          style: textWhite22,
-        ),
-        Text(
-          'Anirudh Musical',
-          style: textgrey14,
-        ),
-        Slider(
-            activeColor: whiteClr,
-            inactiveColor: greyclr,
-            value: .4,
-            onChanged: (value) {}),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '01:20',
-                style: textWhite18,
-              ),
-              Text('02:50', style: textWhite18),
-            ],
-          ),
-        ),
-        height20,
-        height20,
-      ],
-    );
-  }
+  State<SongDetails> createState() => _SongDetailsState();
 }
 
-class PlayerIcons extends StatelessWidget {
-  const PlayerIcons({
-    Key? key,
-  }) : super(key: key);
+class _SongDetailsState extends State<SongDetails> {
+  final AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
+ late Duration playertime; 
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.shuffle_rounded),
-          iconSize: 30,
-          color: greyclr,
-          onPressed: () {},
-          padding: EdgeInsets.zero,
-          splashRadius: 30,
-        ),
-        IconButton(
-          icon: const Icon(Icons.skip_previous_sharp),
-          iconSize: 40,
-          color: greyclr,
-          onPressed: () {},
-          padding: EdgeInsets.zero,
-          splashRadius: 30,
-        ),
-        IconButton(
-          icon: const Icon(Icons.play_circle_filled_outlined),
-          color: selectedItemColor,
-          iconSize: 80,
-          onPressed: () {},
-          padding: EdgeInsets.zero,
-          splashRadius: 40,
-        ),
-        IconButton(
-          icon: const Icon(Icons.skip_next_sharp),
-          color: greyclr,
-          iconSize: 40,
-          onPressed: () {},
-          padding: EdgeInsets.zero,
-          splashRadius: 30,
-        ),
-        IconButton(
-          icon: const Icon(Icons.repeat_outlined),
-          color: greyclr,
-          iconSize: 30,
-          onPressed: () {},
-          padding: EdgeInsets.zero,
-          splashRadius: 30,
-        ),
-      ],
-    );
+    return player.builderCurrent(builder: (context, playing) {
+      return Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: widget.width - 100,
+                width: widget.width - 100,
+                child: QueryArtworkWidget(
+                  id: int.parse(playing.audio.audio.metas.id!), type: ArtworkType.AUDIO,
+                  nullArtworkWidget: ClipRRect(borderRadius: BorderRadius.circular(40),
+                    child: Image.asset('assets/images/music.png',fit: BoxFit.cover,)),
+                  ),
+              ),
+            ],
+          ),
+          height20,
+          Text(
+            player.getCurrentAudioTitle,
+            style: textWhite22,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+          height10,
+          Text(
+            player.getCurrentAudioArtist,
+            style: textgrey14,
+          ),
+          player.builderCurrentPosition(builder: (context, currentPosition){
+            return Slider(
+              activeColor: whiteClr,
+              inactiveColor: greyclr,
+              thumbColor: selectedItemColor,
+              value: currentPosition.inSeconds.toDouble(),
+              min: 0.0,
+              max: playing.audio.duration.inSeconds.toDouble(),
+              onChanged: (value) {
+                setState(() {
+                  Duration newDuration = Duration(seconds: value.toInt());
+                  player.seek(newDuration);
+                });
+              },
+              );
+          }),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                   ((playing.audio.duration.inSeconds)/60).toStringAsFixed(2),
+                  style: textWhite18,
+                ),
+                Text(((playing.audio.duration.inSeconds)/60).toStringAsFixed(2), style: textWhite18,),
+              ],
+            ),
+          ),
+          height20,
+          height20,
+        ],
+      );
+    });
   }
 }
