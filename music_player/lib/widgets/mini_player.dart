@@ -1,6 +1,5 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:music_player/Home/home_screen.dart';
 import 'package:music_player/constants/style.dart';
 import 'package:music_player/player/player.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -33,7 +32,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
-                    return const MusicPlayerScreen();
+                    return  MusicPlayerScreen(index: playing.index,);
                   },
                 ),
               );

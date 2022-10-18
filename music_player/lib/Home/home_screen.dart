@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_player/Home/mostly_played_screen.dart';
 import 'package:music_player/Home/recently_played_screen.dart';
+import 'package:music_player/Model/db_functions.dart';
 import 'package:music_player/Model/model.dart';
+import 'package:music_player/Model/mostplayed_model.dart';
+import 'package:music_player/Model/recentsong_model.dart';
 import 'package:music_player/constants/style.dart';
 import 'package:music_player/player/player.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import '../widgets/method.dart';
+import '../Favourite/favourite_function.dart';
 import '../widgets/mini_player.dart';
 import 'artist_screen.dart';
 
-  bool playerVisibility = false;
+bool playerVisibility = false;
+
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -31,14 +36,18 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Songs> dbSongs = box.values.toList();
 
     for (var item in dbSongs) {
-      allSongs.add(Audio.file(item.songurl,
+      allSongs.add(
+        Audio.file(
+          item.songurl,
           metas: Metas(
-              artist: item.artist,
-              title: item.songname,
-              id: item.id.toString(),),),);
+            artist: item.artist,
+            title: item.songname,
+            id: item.id.toString(),
+          ),
+        ),
+      );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
               valueListenable: box.listenable(),
               builder: (context, Box<Songs> allboxsong, child) {
                 List<Songs> allDbSongs = allboxsong.values.toList();
+                List<MostPlayed> allmostplayedsongs = mostplayedsongs.values.toList();
                 if (allDbSongs.isEmpty) {
 
                   // print(allDbSongs);
@@ -65,23 +75,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 }
                 return ListView.builder(
-                  padding:  EdgeInsets.only(top: 10, bottom: playerVisibility ? 70 : 0),
+                  padding: EdgeInsets.only(
+                      top: 10, bottom: playerVisibility ? 70 : 0),
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     Songs songs = allDbSongs[index];
+                    MostPlayed msongs = allmostplayedsongs[index];
+                    RecentPlayed rsongs ;
                     return ListTile(
                       onTap: () {
+                        rsongs = RecentPlayed(songname: songs.songname, artist: songs.artist, duration: songs.duration, songurl: songs.songurl, id: songs.id);
+                        updateRecentlyPlayed(rsongs);
+                         updatePlayedSongCount(msongs,index);
                         _audioPlayer.open(
                           Playlist(audios: allSongs, startIndex: index),
                           showNotification: true,
                         );
+                        // print("this song played  $count times");
+                        // print(recentlyplayedbox.values.toList()[index]);
                         setState(() {
                           playerVisibility = true;
                           isPlaying = true;
                         });
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          return const MusicPlayerScreen();
+                          return  MusicPlayerScreen(index:index);
                         }));
                       },
                       leading: QueryArtworkWidget(
@@ -91,9 +109,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         id: songs.id,
                         type: ArtworkType.AUDIO,
                         artworkFit: BoxFit.cover,
-                        nullArtworkWidget:
-                            ClipRRect(borderRadius: BorderRadius.circular(15),
-                              child: Image.asset('assets/images/music.png',width: 60,height: 90,fit: BoxFit.cover,)),
+                        nullArtworkWidget: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.asset(
+                              'assets/images/music.png',
+                              width: 60,
+                              height: 90,
+                              fit: BoxFit.cover,
+                            )),
                       ),
                       title: Text(
                         songs.songname,
@@ -105,7 +128,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(color: unSelectedItemClr),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      trailing: favPlayListIcons(),
+                      trailing: FavIcons(
+                        index: index,
+                      ),
                     );
                   },
                   itemCount: allDbSongs.length,
@@ -113,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }),
           Artist(width: width),
           const RecentlyPlayedScreen(),
-          const MostlyPlayedScreen(),
+           MostlyPlayedScreen(),
         ]),
         bottomSheet:
             Visibility(visible: playerVisibility, child: const MiniPlayer()),
@@ -154,10 +179,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+
+
 Padding tabbarTitle({required String title}) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Text(title, style: text18),
   );
 }
-

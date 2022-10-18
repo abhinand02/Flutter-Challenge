@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:music_player/Model/db_functions.dart';
 import 'package:music_player/Model/model.dart';
+import 'package:music_player/Model/mostplayed_model.dart';
 import 'package:music_player/widgets/bottom_navbar.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+
+// bool favorited = false;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -44,7 +48,8 @@ class _SplashScreenState extends State<SplashScreen> {
       await audioPlayer.permissionsRequest();
 
       fetchallSongs = await audioPlayer.querySongs(
-          orderType: OrderType.ASC_OR_SMALLER,);
+        orderType: OrderType.ASC_OR_SMALLER,
+      );
 
       for (var element in fetchallSongs) {
         if (element.fileExtension == "mp3") {
@@ -52,14 +57,27 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       }
 
-      for(var element in allSongs) {
+      for (var element in allSongs) {
         box.add(Songs(
             songname: element.title,
             artist: element.artist!,
             duration: element.duration!,
             songurl: element.uri!,
+            // favorite: false,
             id: element.id));
       }
+
+      for (var element in allSongs) {
+        mostplayedsongs.add(MostPlayed(
+            songname: element.title,
+            songurl: element.uri!,
+            duration: element.duration!,
+            artist: element.artist!,
+            count: 0,
+            id: element.id),);
+      }
+
+      recentlyplayedInitial();
     }
   }
 

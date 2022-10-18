@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/Favorite/favorite.dart';
+import 'package:music_player/Favourite/favourite.dart';
 import 'package:music_player/Home/home_screen.dart';
 import 'package:music_player/Playlist/playlist.dart';
 import 'package:music_player/settings/settings.dart';
@@ -16,11 +16,11 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
 
   int currentIndex =0;
-  final _pages = const [
-     HomeScreen(),
+  final _pages =  [
+     const HomeScreen(),
      FavoriteScreen(),
-     PlaylistScreen(),
-     SettingsScreen(),
+     const PlaylistScreen(),
+     const SettingsScreen(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.favorite_rounded), label: 'Favorite'),
+                icon: Icon(Icons.favorite_rounded), label: 'Favourite'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.queue_music_sharp), label: 'Playlist'),
             BottomNavigationBarItem(

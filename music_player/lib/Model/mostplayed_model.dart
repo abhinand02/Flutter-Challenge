@@ -1,9 +1,9 @@
 import 'package:hive_flutter/adapters.dart';
 
-part 'model.g.dart';
+part 'mostplayed_model.g.dart';
 
-@HiveType(typeId: 0)
-class Songs {
+@HiveType(typeId: 2)
+class MostPlayed {
   @HiveField(0)
   String songname;
 
@@ -17,20 +17,16 @@ class Songs {
   String songurl;
 
   @HiveField(4)
+  int count;
+
+  @HiveField(5)
   int id;
-  
 
-  Songs(
+  MostPlayed(
       {required this.songname,
-      required this.artist,
-      required this.duration,
       required this.songurl,
+      required this.duration,
+      required this.artist,
+      required this.count,
       required this.id});
-}
-
-class SongBox{
- static  Box<Songs>? _box;
- static Box<Songs> getInstance(){
-    return _box ??= Hive.box('Songs');
-  }
 }

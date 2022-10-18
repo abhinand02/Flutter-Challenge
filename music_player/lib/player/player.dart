@@ -1,11 +1,13 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:music_player/Playlist/homeplaylistbutton.dart';
 import 'package:music_player/constants/style.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../widgets/player_icons.dart';
 
 class MusicPlayerScreen extends StatefulWidget {
-  const MusicPlayerScreen({super.key});
+  int index;
+   MusicPlayerScreen({super.key,required this.index});
 
   @override
   State<MusicPlayerScreen> createState() => _MusicPlayerScreenState();
@@ -16,6 +18,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: appBar(height, context), //appbar
       body: Column(
@@ -42,12 +45,17 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.favorite_outline_rounded),
-            onPressed: () {},
+            onPressed: () {
+              
+
+            },
             splashRadius: 20,
           ),
           IconButton(
             icon: const Icon(Icons.playlist_add),
-            onPressed: () {},
+            onPressed: () {
+              HomePlaylistButton(songindex: widget.index).playlistBottomSheet(context);
+            },
             splashRadius: 20,
           ),
         ],
@@ -57,7 +65,6 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
 }
 
 class SongDetails extends StatefulWidget {
-
   const SongDetails({
     Key? key,
     required this.width,
@@ -71,7 +78,6 @@ class SongDetails extends StatefulWidget {
 
 class _SongDetailsState extends State<SongDetails> {
   final AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
- late Duration playertime; 
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +91,15 @@ class _SongDetailsState extends State<SongDetails> {
                 height: widget.width - 100,
                 width: widget.width - 100,
                 child: QueryArtworkWidget(
-                  id: int.parse(playing.audio.audio.metas.id!), type: ArtworkType.AUDIO,
-                  nullArtworkWidget: ClipRRect(borderRadius: BorderRadius.circular(40),
-                    child: Image.asset('assets/images/music.png',fit: BoxFit.cover,)),
-                  ),
+                  id: int.parse(playing.audio.audio.metas.id!),
+                  type: ArtworkType.AUDIO,
+                  nullArtworkWidget: ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: Image.asset(
+                        'assets/images/music.png',
+                        fit: BoxFit.cover,
+                      )),
+                ),
               ),
             ],
           ),
@@ -104,35 +115,42 @@ class _SongDetailsState extends State<SongDetails> {
             player.getCurrentAudioArtist,
             style: textgrey14,
           ),
-          player.builderCurrentPosition(builder: (context, currentPosition){
-            return Slider(
-              activeColor: whiteClr,
-              inactiveColor: greyclr,
-              thumbColor: selectedItemColor,
-              value: currentPosition.inSeconds.toDouble(),
-              min: 0.0,
-              max: playing.audio.duration.inSeconds.toDouble(),
-              onChanged: (value) {
-                setState(() {
-                  Duration newDuration = Duration(seconds: value.toInt());
-                  player.seek(newDuration);
-                });
-              },
-              );
-          }),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          player.builderCurrentPosition(builder: (context, currentPosition) {
+            return Column(
               children: [
-                Text(
-                   ((playing.audio.duration.inSeconds)/60).toStringAsFixed(2),
-                  style: textWhite18,
+                Slider(
+                  activeColor: whiteClr,
+                  inactiveColor: greyclr,
+                  thumbColor: selectedItemColor,
+                  value: currentPosition.inSeconds.toDouble(),
+                  min: 0.0,
+                  max: playing.audio.duration.inSeconds.toDouble(),
+                  onChanged: (value) {
+                    setState(() {
+                      Duration newDuration = Duration(seconds: value.toInt());
+                      player.seek(newDuration);
+                    });
+                  },
                 ),
-                Text(((playing.audio.duration.inSeconds)/60).toStringAsFixed(2), style: textWhite18,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${currentPosition.toString().split(':')[1]}:${currentPosition.toString().split(':')[2].split('.')[0]}',
+                        style: textWhite18,
+                      ),
+                      Text(
+                        '${playing.audio.duration.toString().split(':')[1]}:${playing.audio.duration.toString().split(':')[2].split('.')[0]}',
+                        style: textWhite18,
+                      ),
+                    ],
+                  ),
+                ),
               ],
-            ),
-          ),
+            );
+          }),
           height20,
           height20,
         ],
@@ -140,3 +158,86 @@ class _SongDetailsState extends State<SongDetails> {
     });
   }
 }
+
+
+// class AddToFav extends StatefulWidget {
+//   int index;
+//    AddToFav({super.key, required this.index});
+
+//   @override
+//   State<AddToFav> createState() => _AddToFavState();
+// }
+
+// class _AddToFavState extends State<AddToFav> {
+//  List<FavSongs> fav = [];
+//  final box = SongBox.getInstance();
+//  late  List<Songs> dbSongs;
+
+//   @override
+//   void initState() {
+//     dbSongs = box.values.toList();
+//     super.initState();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+     
+//     return await newMethod();
+//   }
+
+//   Future<Icon> newMethod(int index) async {
+//     List<FavSongs> fav = [];
+//  final box = SongBox.getInstance();
+//  late  List<Songs> dbSongs;
+//     dbSongs = box.values.toList();
+//     fav = favdbsongs.values.toList();
+//     fav = favdbsongs.values.toList();
+//     return fav.where((element) =>
+//                   element.songname == dbSongs[index].songname)
+//               .isEmpty
+//           ?
+//     IconButton(
+//         onPressed: () {
+          
+//             favdbsongs.add(FavSongs(
+//                 artist: dbSongs[index].artist,
+//                 duration: dbSongs[index].duration,
+//                 songname: dbSongs[index].songname,
+//                 songurl: dbSongs[index].songurl,
+//                 id: dbSongs[index].id));
+          
+//           // setState(() {});
+          
+//           print(dbSongs[index].songname);
+//           print(favdbsongs.values.toList());
+
+//         },
+//         icon: Icon(
+//           Icons.favorite_outline_rounded,
+//           color: whiteClr,
+//         ))
+//           :IconButton(
+//             onPressed: () async{
+                
+//          if(favdbsongs.length < 1){
+//           favdbsongs.clear();
+//           // setState(() {
+            
+//           // });
+//          }else{
+//         int currentIndex = fav.indexWhere(
+//         (element) => element.id == dbSongs[index].id);
+
+//         await favdbsongs.deleteAt(currentIndex);
+//         // setState(() {
+
+//         // });
+//          }
+    
+
+//     print(index);
+
+//             },
+//             icon:  Icon(Icons.favorite_rounded,color: selectedItemColor,)
+//           );
+//   }

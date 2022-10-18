@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:music_player/Model/db_functions.dart';
+import 'package:music_player/Model/favmodel.dart';
 import 'package:music_player/Model/model.dart';
+import 'package:music_player/Model/mostplayed_model.dart';
+import 'package:music_player/Model/playlistmodel.dart';
+import 'package:music_player/Model/recentsong_model.dart';
 import 'package:music_player/constants/style.dart';
 import 'Splash Screen/splashscreen.dart';
 
@@ -12,6 +17,19 @@ Future<void> main() async{
 
   Hive.registerAdapter(SongsAdapter());
   await Hive.openBox<Songs>('Songs');
+
+  Hive.registerAdapter(PlaylistSongsAdapter());
+  openDatabase();
+
+  Hive.registerAdapter(FavSongsAdapter());
+  openfavdb();
+
+  Hive.registerAdapter(MostPlayedAdapter());
+  openmostplayeddb();
+
+  Hive.registerAdapter(RecentPlayedAdapter());
+  openrecentlyplayedDb();
+
   runApp(const MyApp());
 }
 
