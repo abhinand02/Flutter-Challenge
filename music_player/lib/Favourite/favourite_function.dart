@@ -58,7 +58,13 @@ class _FavIconsState extends State<FavIcons> {
                             ));
                       
                       setState(() {});
-                      
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  backgroundColor: selectedItemColor,
+                  duration:const Duration(seconds: 1),
+                  margin:const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  content: Text('${dbSongs[widget.index].songname}Added to favourites',)));
                       print(dbSongs[widget.index].songname);
                       print(favdbsongs.values.toList());
 
@@ -70,21 +76,23 @@ class _FavIconsState extends State<FavIcons> {
             :IconButton(
               onPressed: () async{
                             
-                    //  if(favdbsongs.length < 1){
-                    //   favdbsongs.clear();
-                    //   setState(() {
-                        
-                    //   });
-                    //  }else{
                     int currentIndex = fav.indexWhere(
                     (element) => element.songname == dbSongs[widget.index].songname);
 
                     await favdbsongs.deleteAt(currentIndex);
                     print(currentIndex);
-                    setState(() {
+                    setState(() {});
 
-                    });
-                    //  }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                 SnackBar(
+                  backgroundColor: selectedItemColor,
+                  duration:const Duration(seconds: 1),
+                  margin:const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  content: Text('${dbSongs[widget.index].songname} Removed from favourites'),
+                ),
+              );
                 
 
                 print(widget.index);

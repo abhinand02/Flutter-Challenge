@@ -36,13 +36,14 @@ updatePlayedSongCount(MostPlayed value, int index){
 
 updateRecentlyPlayed(RecentPlayed value){
   // recentlyplayedbox.clear();
+  // mostplayedsongs.clear();
   List<RecentPlayed>list = recentlyplayedbox.values.toList();
-  bool isAlready = list.where((element) => element.songname == value.songname).isEmpty;
+  bool isAlready = list.where((element) => element.songname == value.songname).isNotEmpty;
 
-  if(isAlready == true){
+  if(isAlready == false ){
   recentlyplayedbox.add(value);
-  
-  // print(recentlyplayedbox.values.toList());
+
+  print(recentlyplayedbox.values.toList());
   }
  
 }

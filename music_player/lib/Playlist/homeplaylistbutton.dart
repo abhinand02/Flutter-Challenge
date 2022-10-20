@@ -5,7 +5,8 @@ import '../Model/db_functions.dart';
 import '../Model/model.dart';
 import '../Model/playlistmodel.dart';
 
-bool textformVisibility= false;
+bool textformVisibility = false;
+
 class HomePlaylistButton extends StatelessWidget {
   int songindex;
   HomePlaylistButton({
@@ -28,11 +29,16 @@ class HomePlaylistButton extends StatelessWidget {
 
   Future<dynamic> playlistBottomSheet(BuildContext context) {
     return showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),),
         context: context,
         builder: (context) {
           return StatefulBuilder(
             builder: (context, setState) => Container(
-              color: backGroundColor,
+              decoration: BoxDecoration(
+                color: backGroundColor,
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(0)),
+              ),
               child: ValueListenableBuilder<Box<PlaylistSongs>>(
                   valueListenable: playlistbox.listenable(),
                   builder: (context, Box<PlaylistSongs> playlistbox, _) {
@@ -43,6 +49,10 @@ class HomePlaylistButton extends StatelessWidget {
                     }
                     return Column(
                       children: [
+                        Text(
+                          'Playlist',
+                          style: textWhite22,
+                        ),
                         Expanded(
                           child: ListView.builder(
                               itemCount: playlist.length,
@@ -111,7 +121,8 @@ class HomePlaylistButton extends StatelessWidget {
                   }),
             ),
           );
-        });
+        }
+        );
   }
 }
 
@@ -120,17 +131,16 @@ class ifNoPlaylist extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
- 
-
   @override
   State<ifNoPlaylist> createState() => _ifNoPlaylistState();
 }
 
 class _ifNoPlaylistState extends State<ifNoPlaylist> {
-    TextEditingController textcontroller = TextEditingController();
+  TextEditingController textcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           textformVisibility ? 'Create Playlist' : 'No Playlists',
@@ -139,33 +149,33 @@ class _ifNoPlaylistState extends State<ifNoPlaylist> {
         Visibility(
           visible: textformVisibility,
           child: TextFormField(
-                    controller: textcontroller,
-                    cursorHeight: 25,
-                    decoration: InputDecoration(
-                      hintText: 'Playlist name',
-                      hintStyle: text18,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide.none),
-                      fillColor: whiteClr,
-                      filled: true,
-                    ),
-                    validator: (value) {
-                      List<PlaylistSongs> values = playlistbox.values.toList();
-        
-                      bool isAlreadyAdded = values
-                          .where((element) => element.playlistname == value!.trim())
-                          .isNotEmpty;
-        
-                      if (value!.trim() == '') {
-                        return 'Name Required';
-                      }
-                      if (isAlreadyAdded) {
-                        return 'This Name Already Exist';
-                      }
-                      return null;
-                    },
-                  ),
+            controller: textcontroller,
+            cursorHeight: 25,
+            decoration: InputDecoration(
+              hintText: 'Playlist name',
+              hintStyle: text18,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none),
+              fillColor: whiteClr,
+              filled: true,
+            ),
+            validator: (value) {
+              List<PlaylistSongs> values = playlistbox.values.toList();
+
+              bool isAlreadyAdded = values
+                  .where((element) => element.playlistname == value!.trim())
+                  .isNotEmpty;
+
+              if (value!.trim() == '') {
+                return 'Name Required';
+              }
+              if (isAlreadyAdded) {
+                return 'This Name Already Exist';
+              }
+              return null;
+            },
+          ),
         ),
         ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
@@ -174,13 +184,11 @@ class _ifNoPlaylistState extends State<ifNoPlaylist> {
               shape: const StadiumBorder(),
               padding: const EdgeInsets.all(10)),
           onPressed: () {
-          textformVisibility == false ?  setState(() {
-              textformVisibility=true;
-            }) :
-            playlistbox.add(PlaylistSongs(
-                playlistname: textcontroller.text,
-                playlistsongs: []));
-            Navigator.pop(context);
+            textformVisibility == false
+                ? setState(() {
+                    textformVisibility = true;
+                  })
+                : addPlaylist();
           },
           icon: const Icon(Icons.add),
           label: Text(
@@ -190,5 +198,14 @@ class _ifNoPlaylistState extends State<ifNoPlaylist> {
         ),
       ],
     );
+  }
+
+  addPlaylist() {
+    playlistbox.add(
+        PlaylistSongs(playlistname: textcontroller.text, playlistsongs: []));
+    // Navigator.pop(context);
+    setState(() {
+      textformVisibility = false;
+    });
   }
 }
