@@ -26,6 +26,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         valueListenable: playlistbox.listenable(),
         builder: (context, Box<PlaylistSongs> value, child) {
           playlists = value.values.toList();
+          // if(value.isEmpty){
+          //   return Center(child: Text('No Playlist!',style: textWhite18,),);
+          // }
           return Column(
             children: [
               Flexible(
@@ -173,12 +176,13 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                     padding: const EdgeInsets.all(10)),
                 onPressed: () {
                   showModalBottomSheet(
+                    backgroundColor:const  Color.fromARGB(255, 23, 23, 24),
                       context: context,
                       builder: (context) {
                         return bottomSheet(context);
                       },
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)));
+                          borderRadius: BorderRadius.circular(20),),);
                 },
                 icon: const Icon(Icons.add),
                 label: Text(
@@ -195,21 +199,26 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
 
   Widget bottomSheet(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return Container(
-      height: width * .7,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+    return Padding(
+      padding:  EdgeInsets.only(bottom:MediaQuery.of(context).viewInsets.bottom+10),
+      child: Container(
+        height: width * .7,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+          color: Color.fromARGB(255, 23, 23, 24),
         ),
-        color: Color.fromARGB(255, 23, 23, 24),
-      ),
-      padding: const EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-      ),
-      child: Column(
-        children: [playlistForm(context)],
+        padding: const EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 20,
+        ),
+        child: Column(
+          children: [
+            playlistForm(context),
+          ],
+        ),
       ),
     );
   }
@@ -222,7 +231,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
           style: textWhite22,
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: TextFormField(
             controller: textcontroller,
             cursorHeight: 25,

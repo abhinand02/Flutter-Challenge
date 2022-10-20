@@ -27,13 +27,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     requestStoragePremission();
-    goToHome();
     super.initState();
   }
 
   Timer goToHome() {
     return Timer(
-      const Duration(seconds: 3),
+      const Duration(seconds: 2),
       () => Navigator.of(context).pushReplacement(
         MaterialPageRoute(
             builder: (BuildContext context) => const BottomNavBar()),
@@ -46,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (!permissionStatus) {
       await audioPlayer.permissionsRequest();
-
+       goToHome();
       fetchallSongs = await audioPlayer.querySongs(
         orderType: OrderType.ASC_OR_SMALLER,
       );
@@ -76,8 +75,8 @@ class _SplashScreenState extends State<SplashScreen> {
             count: 0,
             id: element.id),);
       }
-
-      recentlyplayedInitial();
+    }else{
+      goToHome();
     }
   }
 

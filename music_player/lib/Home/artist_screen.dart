@@ -54,7 +54,7 @@ class _ArtistState extends State<Artist> {
           return Center(
             child: Text(
               'No Artist Found!',
-              style: textWhite22,
+              style: textWhite18,
             ),
           );
         }

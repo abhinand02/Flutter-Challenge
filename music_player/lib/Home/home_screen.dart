@@ -70,8 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   // print(allDbSongs);
 
-                  return const Center(
-                    child: Text('No Songs Found!'),
+                  return  Center(
+                    child: Text('No Songs Found!',style:  textWhite18,),
                   );
                 }
                 return ListView.builder(
@@ -84,12 +84,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     RecentPlayed rsongs ;
                     return ListTile(
                       onTap: () {
-                        rsongs = RecentPlayed(songname: songs.songname, artist: songs.artist, duration: songs.duration, songurl: songs.songurl, id: songs.id);
+                        rsongs = RecentPlayed(
+                          songname: songs.songname, artist: songs.artist, duration: songs.duration, songurl: songs.songurl, id: songs.id);
                         updateRecentlyPlayed(rsongs);
                          updatePlayedSongCount(msongs,index);
                         _audioPlayer.open(
                           Playlist(audios: allSongs, startIndex: index),
-                          showNotification: true,
+                          showNotification: true,loopMode: LoopMode.playlist,
                         );
                         // print("this song played  $count times");
                         // print(recentlyplayedbox.values.toList()[index]);

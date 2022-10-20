@@ -74,7 +74,8 @@ plstsongs.add(Audio.file(song.songurl,metas: Metas(title: song.songname,artist: 
                     onPressed: (){
                       setState(() {
                         songs.removeAt(index);
-                        plsongs.removeAt(index); 
+                        plstsongs.removeAt(index);
+                        playlistbox.putAt(widget.playlistindex, PlaylistSongs(playlistname: widget.playlistname, playlistsongs: songs));
                       });
                     },
                     icon:Icon(Icons.remove_outlined,color: whiteClr,)),

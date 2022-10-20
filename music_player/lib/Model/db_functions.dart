@@ -24,8 +24,6 @@ mostplayedsongs = await Hive.openBox('mostplayed');
 late Box<RecentPlayed> recentlyplayedbox;
 openrecentlyplayedDb()async{
   recentlyplayedbox =  await Hive.openBox('recentlyplayed');
-  RecentPlayed value = RecentPlayed(songname: null, artist: null, duration: null, songurl: null, id: null);
-  recentlyplayedbox.add(value);
 }
 
 updatePlayedSongCount(MostPlayed value, int index){
@@ -35,13 +33,16 @@ updatePlayedSongCount(MostPlayed value, int index){
  print("this song played  ${value.count} times");
 }
 
-recentlyplayedInitial(){
-  RecentPlayed value = RecentPlayed(id: 1);
-  recentlyplayedbox.add(value);
-}
 
 updateRecentlyPlayed(RecentPlayed value){
   // recentlyplayedbox.clear();
- recentlyplayedbox.put(1, value);
- print(recentlyplayedbox.values.toList());
+  List<RecentPlayed>list = recentlyplayedbox.values.toList();
+  bool isAlready = list.where((element) => element.songname == value.songname).isEmpty;
+
+  if(isAlready == true){
+  recentlyplayedbox.add(value);
+  
+  // print(recentlyplayedbox.values.toList());
+  }
+ 
 }

@@ -40,10 +40,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(textTheme: GoogleFonts.urbanistTextTheme(Theme.of(context).textTheme,),
+      theme: ThemeData(
+        textTheme: GoogleFonts.urbanistTextTheme(Theme.of(context).textTheme,),
         appBarTheme: AppBarTheme(backgroundColor: backGroundColor),
         sliderTheme: const SliderThemeData(trackHeight: 2),
-      scaffoldBackgroundColor: backGroundColor),
+      scaffoldBackgroundColor: backGroundColor
+      ),
+      // darkTheme: ThemeData(brightness: Brightness.dark,
+      // textTheme: GoogleFonts.urbanistTextTheme(Theme.of(context).textTheme,),
+      //   appBarTheme: AppBarTheme(backgroundColor: backGroundColor),
+      //   sliderTheme: const SliderThemeData(trackHeight: 2),
+      // scaffoldBackgroundColor: backGroundColor
+      // ),
       home: const SplashScreen(
       ),
     );

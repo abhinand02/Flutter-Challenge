@@ -53,7 +53,9 @@ class _FavIconsState extends State<FavIcons> {
                             duration: dbSongs[widget.index].duration,
                             songname: dbSongs[widget.index].songname,
                             songurl: dbSongs[widget.index].songurl,
-                            id: dbSongs[widget.index].id));
+                            id: dbSongs[widget.index].id,
+                            // index: widget.index,
+                            ));
                       
                       setState(() {});
                       
@@ -68,20 +70,21 @@ class _FavIconsState extends State<FavIcons> {
             :IconButton(
               onPressed: () async{
                             
-                     if(favdbsongs.length < 1){
-                      favdbsongs.clear();
-                      setState(() {
+                    //  if(favdbsongs.length < 1){
+                    //   favdbsongs.clear();
+                    //   setState(() {
                         
-                      });
-                     }else{
+                    //   });
+                    //  }else{
                     int currentIndex = fav.indexWhere(
-                    (element) => element.id == dbSongs[widget.index].id);
+                    (element) => element.songname == dbSongs[widget.index].songname);
 
                     await favdbsongs.deleteAt(currentIndex);
+                    print(currentIndex);
                     setState(() {
 
                     });
-                     }
+                    //  }
                 
 
                 print(widget.index);
