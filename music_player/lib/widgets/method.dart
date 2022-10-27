@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:music_player/Model/db_functions.dart';
+import 'package:flutter/services.dart';
 import '../constants/style.dart';
+
+AssetsAudioPlayer audioplayer = AssetsAudioPlayer();
 
 AppBar appBar(String title, [IconButton? backButton]) {
   return AppBar(
@@ -14,37 +18,11 @@ AppBar appBar(String title, [IconButton? backButton]) {
   );
 }
 
-Row favPlayListIcons(
-    String artist, String songname, String songurl, int duration, int id) {
-      // bool favorited = false ;
-  return Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Padding(
-        padding: const EdgeInsets.only(right: 20, bottom: 20),
-        child: IconButton(
-          onPressed: () {
+sleeptime(int picktime){
+  
+  Timer( Duration(seconds: picktime), popFunction);
+}
 
-            print(id);
-            // addFavSongs(FavSongs(
-            //     artist: artist,
-            //     duration: duration,
-            //     songname: songname,
-            //     songurl: songurl,
-            //     songid: songid,
-            //     id: id,),);
-          },
-          icon: const Icon(Icons.favorite_outline_rounded  ),
-          // color: favorited == false ? whiteClr : selectedItemColor,
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(right: 10, bottom: 20),
-        child: Icon(
-          Icons.playlist_add,
-          color: whiteClr,
-        ),
-      )
-    ],
-  );
+popFunction(){
+SystemNavigator.pop();
 }

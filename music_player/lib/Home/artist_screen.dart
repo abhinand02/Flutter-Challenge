@@ -1,4 +1,3 @@
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../constants/style.dart';
@@ -20,7 +19,6 @@ class Artist extends StatefulWidget {
 List<ArtistModel> artistList = [];
 
 class _ArtistState extends State<Artist> {
-  final AssetsAudioPlayer _audioPlayer = AssetsAudioPlayer();
   OnAudioQuery fetchartist = OnAudioQuery();
   late int newIndex;
   int count = 0;
@@ -32,13 +30,10 @@ class _ArtistState extends State<Artist> {
     super.initState();
   }
 
- void getArtist() async {
+  void getArtist() async {
     artistList = await fetchartist.queryArtists();
-
-    for (var items in artistList) {
-      artistList.add(items);
-    }
   }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<ArtistModel>>(
@@ -59,48 +54,58 @@ class _ArtistState extends State<Artist> {
           );
         }
         return GridView.builder(
-          padding:  EdgeInsets.only(top: 10, bottom: playerVisibility ? 70 : 0),
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: (1),
-            ),
-            itemCount: artistList.length - 1,
-            itemBuilder: (BuildContext context, int index) {
-              return Column(children: [
+          padding: EdgeInsets.only(top: 10, bottom: playerVisibility ? 70 : 0),
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: (1),
+          ),
+          itemCount: artistList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Column(
+              children: [
                 GestureDetector(
                   onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return  SongsByArtistScreen(artistId:artistList[index].id, artistName :artistList[index].artist);
-                }));
-              },
+                    // print(artistList[index].numberOfTracks);
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return SongsByArtistScreen(
+                              artistId: artistList[index].id,
+                              artistName: artistList[index].artist);
+                        },
+                      ),
+                    );
+                  },
                   child: Container(
-                    padding: const EdgeInsets.only(top: 10,left: 20,right: 20),
+                    padding:
+                        const EdgeInsets.only(top: 10, left: 20, right: 20),
                     color: backGroundColor,
                     child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          'assets/images/music.png',
-                          fit: BoxFit.cover,
-                        ),),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        'assets/images/music.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
                 Text(
-        artistList[index]
-            .artist
-            .split(',')[0]
-            .toString(),
-        style: textWhite18,
-      ),
+                  artistList[index].artist.split(',')[0].toString(),
+                  style: textWhite18,
+                ),
                 Text(
-              'Songs ${artistList[index].numberOfTracks.toString()} ',
-              style: textgrey18,
-            ),
-              ]);
-            });
+                  'Songs ${artistList[index].numberOfTracks.toString()} ',
+                  style: textgrey18,
+                ),
+              ],
+            );
+          },
+        );
       },
     );
-}
+  }
 }

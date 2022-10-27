@@ -7,7 +7,7 @@ import 'package:music_player/Model/mostplayed_model.dart';
 import 'package:music_player/widgets/bottom_navbar.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-// bool favorited = false;
+late bool status;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void requestStoragePremission() async {
     bool permissionStatus = await audioPlayer.permissionsStatus();
-
+ status = permissionStatus;
     if (!permissionStatus) {
       await audioPlayer.permissionsRequest();
        goToHome();

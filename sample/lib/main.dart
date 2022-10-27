@@ -1,18 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 import 'home.dart';
 import 'model/model.dart';
 
-Future<void> main() async{
-
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
   Hive.registerAdapter(SongsAdapter());
   await Hive.openBox<Songs>('Songs');
-  
-  
-  runApp(const MyApp());
+
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+    )
+  ], child: const MyApp()));
+}
+
+class ThemeProvider extends ChangeNotifier {
+  ThemeData? currentTheme;
+
+  setLightMode() {
+    currentTheme = ThemeData(
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: Colors.red,
+    );
+    notifyListeners();
+  }
+
+  setDarkMode() {
+    currentTheme = ThemeData(
+        brightness: Brightness.dark,
+         scaffoldBackgroundColor: Colors.green,
+         );
+         notifyListeners();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -23,20 +46,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
+      theme: Provider.of<ThemeProvider>(context).currentTheme,
       home: const Player(),
     );
   }
 }
-

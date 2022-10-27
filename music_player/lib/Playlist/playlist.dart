@@ -20,154 +20,171 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: appBar('Playlists'),
       body: ValueListenableBuilder<Box<PlaylistSongs>>(
         valueListenable: playlistbox.listenable(),
         builder: (context, Box<PlaylistSongs> value, child) {
           playlists = value.values.toList();
-          // if(value.isEmpty){
-          //   return Center(child: Text('No Playlist!',style: textWhite18,),);
-          // }
           return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Flexible(
-                child: ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    TextEditingController textcontroller =
-                        TextEditingController(
-                            text: playlists[index].playlistname);
-                    return ListTile(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return SongsByPlaylistScreen(
-                            playlistname: playlists[index].playlistname,
-                            playlistindex: index,
-                            allPlaylistSongs: playlists[index].playlistsongs!,
-                          );
-                        }));
-                      },
-                      leading: Icon(
-                        Icons.headphones_rounded,
-                        color: selectedItemColor,
-                        size: 30,
-                      ),
-                      title: Text(
-                        playlists[index].playlistname,
+              value.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No Playlist!',
                         style: textWhite18,
                       ),
-                      trailing: PopupMenuButton(
-                        icon: Icon(
-                          Icons.more_vert,
-                          color: whiteClr,
-                        ),
-                        itemBuilder: (_) => <PopupMenuItem<int>>[
-                          PopupMenuItem(
-                            value: 0,
-                            child: SizedBox(
-                              width: 80,
-                              child: Text(
-                                'Rename',
-                                style: text18,
-                              ),
+                    )
+                  : Flexible(
+                      child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          TextEditingController textcontroller =
+                              TextEditingController(
+                                  text: playlists[index].playlistname);
+                          return ListTile(
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return SongsByPlaylistScreen(
+                                  playlistname: playlists[index].playlistname,
+                                  playlistindex: index,
+                                  allPlaylistSongs:
+                                      playlists[index].playlistsongs!,
+                                );
+                              }));
+                            },
+                            leading: Icon(
+                              Icons.headphones_rounded,
+                              color: selectedItemColor,
+                              size: 30,
                             ),
-                          ),
-                          PopupMenuItem(
-                            value: 1,
-                            child: SizedBox(
-                              width: 80,
-                              child: Text(
-                                'Delete',
-                                style: text18,
-                              ),
+                            title: Text(
+                              playlists[index].playlistname,
+                              style: textWhite18,
                             ),
-                          )
-                        ],
-                        onSelected: (selectedindex) async {
-                          switch (selectedindex) {
-                            case 0:
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      backgroundColor: backGroundColor,
-                                      content: TextField(
-                                        controller: textcontroller,
-                                        decoration: InputDecoration(
-                                            fillColor: whiteClr),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            playlistbox.putAt(
-                                                index,
-                                                PlaylistSongs(
-                                                    playlistname:
-                                                        textcontroller.text,
-                                                    playlistsongs: []));
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'Save',
+                            trailing: PopupMenuButton(
+                              icon: Icon(
+                                Icons.more_vert,
+                                color: whiteClr,
+                              ),
+                              itemBuilder: (_) => <PopupMenuItem<int>>[
+                                PopupMenuItem(
+                                  value: 0,
+                                  child: SizedBox(
+                                    width: 80,
+                                    child: Text(
+                                      'Rename',
+                                      style: text18,
+                                    ),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 1,
+                                  child: SizedBox(
+                                    width: 80,
+                                    child: Text(
+                                      'Delete',
+                                      style: text18,
+                                    ),
+                                  ),
+                                )
+                              ],
+                              onSelected: (selectedindex) async {
+                                switch (selectedindex) {
+                                  case 0:
+                                    showModalBottomSheet(
+                                      backgroundColor: const Color.fromARGB(255, 23, 23, 24),
+                                      shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                       ),
+                                        context: context,
+                                        builder: (context) {
+                                          return editBottom(context);
+                                        });
+                                    // showDialog(
+                                    //     context: context,
+                                    //     builder: (context) {
+                                    //       return AlertDialog(
+                                    //         backgroundColor: backGroundColor,
+                                    //         content: TextField(
+                                    //           controller: textcontroller,
+                                    //           decoration: InputDecoration(
+                                    //               fillColor: whiteClr),
+                                    //         ),
+                                    //         actions: [
+                                    //           TextButton(
+                                    //             onPressed: () {
+                                    //               playlistbox.putAt(
+                                    //                   index,
+                                    //                   PlaylistSongs(
+                                    //                       playlistname:
+                                    //                           textcontroller.text,
+                                    //                       playlistsongs: []));
+                                    //               Navigator.pop(context);
+                                    //             },
+                                    //             child: Text(
+                                    //               'Save',
+                                    //               style: textWhite18,
+                                    //             ),
+                                    //           ),
+                                    //           TextButton(
+                                    //             onPressed: () {
+                                    //               Navigator.pop(context);
+                                    //             },
+                                    //             child: Text(
+                                    //               'No',
+                                    //               style: textWhite18,
+                                    //             ),
+                                    //           ),
+                                    //         ],
+                                    //       );
+                                    //     });
+                                    break;
+                                  case 1:
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          backgroundColor: backGroundColor,
+                                          content: Text(
+                                            'Do you want to delete ?',
                                             style: textWhite18,
                                           ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'No',
-                                            style: textWhite18,
-                                          ),
-                                        ),
-                                      ],
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                playlistbox.deleteAt(index);
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                'Yes',
+                                                style: textWhite18,
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(
+                                                'No',
+                                                style: textWhite18,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     );
-                                  });
-                              break;
-                            case 1:
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      backgroundColor: backGroundColor,
-                                      content: Text(
-                                        'Do you want to delete ?',
-                                        style: textWhite18,
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            playlistbox.deleteAt(index);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'Yes',
-                                            style: textWhite18,
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'No',
-                                            style: textWhite18,
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                          }
+                                }
+                              },
+                            ),
+                          );
                         },
+                        itemCount: playlists.length,
                       ),
-                    );
-                  },
-                  itemCount: playlists.length,
-                ),
-              ),
+                    ),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: selectedItemColor,
@@ -176,13 +193,15 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                     padding: const EdgeInsets.all(10)),
                 onPressed: () {
                   showModalBottomSheet(
-                    backgroundColor:const  Color.fromARGB(255, 23, 23, 24),
-                      context: context,
-                      builder: (context) {
-                        return bottomSheet(context);
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),),);
+                    backgroundColor: const Color.fromARGB(255, 23, 23, 24),
+                    context: context,
+                    builder: (context) {
+                      return bottomSheet(context);
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.add),
                 label: Text(
@@ -197,10 +216,61 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     );
   }
 
+Widget editBottom(BuildContext context){
+  double width = MediaQuery.of(context).size.width;
+  return Padding(
+                                            padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+                                            child: Container(
+                                              height: width * .7,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+          color: Color.fromARGB(255, 23, 23, 24),
+        ),
+                                              child: TextFormField(
+                                                autofocus: true,
+                                                controller: textcontroller,
+                                                cursorHeight: 25,
+                                                decoration: InputDecoration(
+                                                  hintText: 'Playlist name',
+                                                  hintStyle: text18,
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(20),
+                                                      borderSide: BorderSide.none),
+                                                  fillColor: whiteClr,
+                                                  filled: true,
+                                                ),
+                                                validator: (value) {
+                                                  List<PlaylistSongs> values =
+                                                      playlistbox.values.toList();
+
+                                                  bool isAlreadyAdded = values
+                                                      .where((element) =>
+                                                          element.playlistname ==
+                                                          value!.trim())
+                                                      .isNotEmpty;
+
+                                                  if (value!.trim() == '') {
+                                                    return 'Name Required';
+                                                  }
+                                                  if (isAlreadyAdded) {
+                                                    return 'This Name Already Exist';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            ),
+                                          );
+}
+
   Widget bottomSheet(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Padding(
-      padding:  EdgeInsets.only(bottom:MediaQuery.of(context).viewInsets.bottom+10),
+      padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 10),
       child: Container(
         height: width * .7,
         decoration: const BoxDecoration(
@@ -233,6 +303,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: TextFormField(
+            autofocus: true,
             controller: textcontroller,
             cursorHeight: 25,
             decoration: InputDecoration(

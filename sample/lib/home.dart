@@ -3,7 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 import 'package:sample/Open%20Player/open_player.dart';
+import 'package:sample/main.dart';
 import 'package:sample/model/model.dart';
 
 class Player extends StatefulWidget {
@@ -14,6 +16,7 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player> {
+  bool isDark = false;
   final box = SongBox.getInstance();
 
   List<Audio> convertAudios = [];
@@ -55,6 +58,18 @@ class _PlayerState extends State<Player> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(actions:  [
+        IconButton(onPressed: (){
+          final themeProvider = Provider.of<ThemeProvider>(context,listen: false);
+
+          setState(() {
+            isDark = !isDark;
+          });
+
+          isDark ? themeProvider.setDarkMode() 
+          : themeProvider.setLightMode();
+        }, icon: const Icon(Icons.dark_mode_rounded))
+      ],),
       body: ValueListenableBuilder<Box<Songs>>(
           valueListenable: box.listenable(),
           builder: (context, Box<Songs> allSongs, child) {

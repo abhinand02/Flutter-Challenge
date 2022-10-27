@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:music_player/main.dart';
 
-Color backGroundColor = const Color.fromARGB(255,25, 27, 40);    // App Theme Color
+Color backGroundColor =  const Color.fromARGB(255,25, 27, 40);    // App Theme Color
 
 Color selectedItemColor = const Color.fromARGB(255,114, 90, 193);  // Selected Icon,Text,favorites Color 
 
@@ -9,15 +10,17 @@ Color unSelectedItemClr = const Color.fromARGB(255,163, 164, 169); // unselected
 
 Color whiteClr =  Colors.white;  //Common White Color
 
+Color blackClr = Colors.black;  //
+
 Color miniPlayerclr = const Color.fromRGBO(77, 80, 96,1); // miniPlayer Background color
 
 Color greyclr = const Color.fromRGBO(166, 166, 166, 1);   
 
 TextStyle text18 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 18),fontWeight: FontWeight.w600); //common text with fontsize 18 
 
-TextStyle textWhite18 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 18),fontWeight: FontWeight.w600,color: whiteClr);
+TextStyle textWhite18 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 18),fontWeight: FontWeight.w600,color: isDarkMode ? whiteClr : blackClr);
 
-TextStyle textWhite22 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 22),fontWeight: FontWeight.w600,color: whiteClr);
+TextStyle textWhite22 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 22),fontWeight: FontWeight.w600,color:  isDarkMode ? whiteClr : blackClr);
 
 TextStyle textBlack22 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 22),fontWeight: FontWeight.w900,color: Colors.black);
 

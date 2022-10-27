@@ -1,15 +1,16 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:music_player/Model/recentsong_model.dart';
 import 'package:music_player/Playlist/homeplaylistbutton.dart';
-import 'package:music_player/player/player.dart';
+import 'package:music_player/NowPlaying%20Screen/nowplaying.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../Model/db_functions.dart';
 import '../Model/mostplayed_model.dart';
 import '../constants/style.dart';
 
 class MostlyPlayedScreen extends StatefulWidget {
-  MostlyPlayedScreen({super.key});
+  const MostlyPlayedScreen({super.key});
 
   @override
   State<MostlyPlayedScreen> createState() => _MostlyPlayedScreenState();
@@ -18,6 +19,7 @@ class MostlyPlayedScreen extends StatefulWidget {
 class _MostlyPlayedScreenState extends State<MostlyPlayedScreen> {
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer.withId('0');
   List<Audio> songs = [];
+  List<RecentPlayed> rsongs = recentlyplayedbox.values.toList();
 
   @override
   void initState() {
@@ -39,6 +41,7 @@ class _MostlyPlayedScreenState extends State<MostlyPlayedScreen> {
     }
     super.initState();
   }
+
   List<MostPlayed> finalmpsongs = [];
 
   @override
@@ -52,14 +55,17 @@ class _MostlyPlayedScreenState extends State<MostlyPlayedScreen> {
               physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()),
               itemBuilder: (context, index) {
+                MostPlayed msongs = mpsongsbox.values.toList()[index];
                 return ListTile(
                   onTap: () {
+                    updatePlayedSongCount(msongs, index);
+                    updateRecentlyPlayed(rsongs[index]);
                     audioPlayer.open(
                       Playlist(audios: songs, startIndex: index),
                       showNotification: true,
                     );
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => MusicPlayerScreen(index: index)));
+                        builder: (context) => const MusicPlayerScreen()));
                   },
                   leading: QueryArtworkWidget(
                     artworkBorder: BorderRadius.circular(15),
@@ -69,13 +75,14 @@ class _MostlyPlayedScreenState extends State<MostlyPlayedScreen> {
                     type: ArtworkType.AUDIO,
                     artworkFit: BoxFit.cover,
                     nullArtworkWidget: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Image.asset(
-                          'assets/images/music.png',
-                          width: 60,
-                          height: 90,
-                          fit: BoxFit.cover,
-                        )),
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.asset(
+                        'assets/images/music.png',
+                        width: 60,
+                        height: 90,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                   title: Text(
                     finalmpsongs[index].songname,
@@ -103,21 +110,3 @@ class _MostlyPlayedScreenState extends State<MostlyPlayedScreen> {
     );
   }
 }
-      //  )
-      
-    // );
-// }
-
-
-//  int getMostPlayed(){
-//  List<MostPlayed> songs=  mostplayedsongs.values.toList();
-//   int large = 0;
-//  for(int i=0;i<songs.length-1;i++){
-//   for(int j =0;j<songs.length;j++){
-// if(songs[i].count < songs[j].count){
-//      large = large;
-//   }
-// } 
-//  }
-//  return large;
-// }
