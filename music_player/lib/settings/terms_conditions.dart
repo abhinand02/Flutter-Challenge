@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:music_player/main.dart';
+
+import '../Splash Screen/splashscreen.dart';
+import '../constants/style.dart';
 
 class TermsAndCondition extends StatelessWidget {
   const TermsAndCondition({super.key});
@@ -17,9 +21,9 @@ class TermsAndCondition extends StatelessWidget {
                 data: snapshot.data!,
                 styleSheet: MarkdownStyleSheet.fromTheme(
                   ThemeData(
-                      textTheme: const TextTheme(
+                      textTheme:  TextTheme(
                           bodyText2:
-                              TextStyle(color: Colors.white, fontSize: 18))),
+                              TextStyle(fontSize: 18,color:  isDarkMode ? whiteClr : blackClr),),),
                 ),
               );
             }

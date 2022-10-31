@@ -8,6 +8,7 @@ import 'package:music_player/NowPlaying%20Screen/nowplaying.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../Model/db_functions.dart';
 import '../constants/style.dart';
+import '../settings/settings.dart';
 import 'home_screen.dart';
 
 class RecentlyPlayedScreen extends StatefulWidget {
@@ -85,13 +86,13 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                          updatePlayedSongCount(msongs, index);
                         _audioPlayer.open(
                           Playlist(audios: resongs, startIndex: index),
-                          showNotification: true,
+                          showNotification: notificationSwitch,
                           loopMode: LoopMode.none,
                         );
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) =>
-                                const MusicPlayerScreen(),
+                                const NowPlayingScreen(),
                           ),
                         );
                       },

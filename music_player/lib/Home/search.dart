@@ -5,6 +5,11 @@ import 'package:music_player/constants/style.dart';
 import 'package:music_player/NowPlaying%20Screen/nowplaying.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
+import '../Model/db_functions.dart';
+import '../Model/mostplayed_model.dart';
+import '../Model/recentsong_model.dart';
+import '../settings/settings.dart';
+
 class Search extends SearchDelegate {
   @override
   Widget? buildLeading(BuildContext context) => IconButton(
@@ -29,7 +34,7 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Container();
+    return buildSuggestions(context);
   }
 
   @override
@@ -47,10 +52,11 @@ class Search extends SearchDelegate {
   }
 }
 
-Widget searchResults(List<Songs> songs) {
+Widget searchResults(List<Songs> song) {
+  final dbsongs = SongBox.getInstance().values.toList();
   AssetsAudioPlayer _audioPlayer = AssetsAudioPlayer.withId('0');
   List<Audio> audio = [];
-  for (var item in songs) {
+  for (var item in song) {
     audio.add(
       Audio.file(
         item.songurl,
@@ -62,48 +68,72 @@ Widget searchResults(List<Songs> songs) {
   return ListView.builder(
     physics: const NeverScrollableScrollPhysics(),
     itemBuilder: (context, index) {
-      return ListTile(
-        onTap: () {
-          FocusScopeNode currentFocus= FocusScope.of(context);
-          if(!currentFocus.hasPrimaryFocus){
-            currentFocus.unfocus();
-          }
-          _audioPlayer.open(
-            Playlist(audios: audio, startIndex: index),
-            showNotification: true,
-            loopMode: LoopMode.playlist,
-          );
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => MusicPlayerScreen(),
-            ),
-          );
-        },
-        leading: QueryArtworkWidget(
-          artworkBorder: BorderRadius.circular(15),
-          artworkHeight: 90,
-          artworkWidth: 60,
-          id: songs[index].id,
-          type: ArtworkType.AUDIO,
-          artworkFit: BoxFit.cover,
-          nullArtworkWidget: ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Image.asset(
-              'assets/images/music.png',
-              width: 60,
-              height: 90,
-              fit: BoxFit.cover,
+      if (song.isEmpty) {
+        return Scaffold(
+          body: Center(
+            child: Text(
+              'No Search Result 🤣!',
+              style: textWhite18,
             ),
           ),
-        ),
-        title: Text(
-          songs[index].songname,
-          style: textWhite18,
-          overflow: TextOverflow.ellipsis,
-        ),
-        contentPadding: const EdgeInsets.all(10),
-      );
+        );
+      } else {
+        return ListTile(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+
+            final rsongs = RecentPlayed(
+                songname: song[index].songname,
+                artist: song[index].artist,
+                duration: song[index].duration,
+                songurl: song[index].songurl,
+                id: song[index].id);
+            updateRecentlyPlayed(rsongs);
+            int songIndex = song.indexWhere(
+                (element) => element.songname == dbsongs[index].songname);
+            MostPlayed msongs = mostplayedsongs.values.toList()[songIndex];
+            updatePlayedSongCount(msongs, index);
+
+            _audioPlayer.open(
+              Playlist(audios: audio, startIndex: index),
+              showNotification: notificationSwitch,
+              loopMode: LoopMode.playlist,
+            );
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const NowPlayingScreen(),
+              ),
+            );
+          },
+          leading: QueryArtworkWidget(
+            artworkBorder: BorderRadius.circular(15),
+            artworkHeight: 90,
+            artworkWidth: 60,
+            id: song[index].id,
+            type: ArtworkType.AUDIO,
+            artworkFit: BoxFit.cover,
+            nullArtworkWidget: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Image.asset(
+                'assets/images/music.png',
+                width: 60,
+                height: 90,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          title: Text(
+            song[index].songname,
+            style: textWhite18,
+            overflow: TextOverflow.ellipsis,
+          ),
+          contentPadding: const EdgeInsets.all(10),
+        );
+      }
     },
-    itemCount: songs.length,
+    itemCount: song.length,
   );
 }

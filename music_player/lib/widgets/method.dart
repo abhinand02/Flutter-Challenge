@@ -6,7 +6,7 @@ import '../constants/style.dart';
 
 AssetsAudioPlayer audioplayer = AssetsAudioPlayer();
 
-AppBar appBar(String title, [IconButton? backButton]) {
+AppBar appBar(String title, [IconButton? backButton, IconButton? trailingButton]) {
   return AppBar(
     leading: backButton,
     title: Text(
@@ -15,14 +15,19 @@ AppBar appBar(String title, [IconButton? backButton]) {
     ),
     elevation: 0,
     centerTitle: true,
+    actions: [
+      Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: trailingButton,
+      )
+    ],
   );
 }
 
-sleeptime(int picktime){
-  
-  Timer( Duration(seconds: picktime), popFunction);
+sleeptime(int picktime) {
+  Timer(Duration(seconds: picktime), popFunction);
 }
 
-popFunction(){
-SystemNavigator.pop();
+popFunction() {
+  SystemNavigator.pop();
 }

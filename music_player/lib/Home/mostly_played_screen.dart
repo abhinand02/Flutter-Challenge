@@ -8,6 +8,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 import '../Model/db_functions.dart';
 import '../Model/mostplayed_model.dart';
 import '../constants/style.dart';
+import '../settings/settings.dart';
 
 class MostlyPlayedScreen extends StatefulWidget {
   const MostlyPlayedScreen({super.key});
@@ -62,10 +63,10 @@ class _MostlyPlayedScreenState extends State<MostlyPlayedScreen> {
                     updateRecentlyPlayed(rsongs[index]);
                     audioPlayer.open(
                       Playlist(audios: songs, startIndex: index),
-                      showNotification: true,
+                      showNotification: notificationSwitch,
                     );
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const MusicPlayerScreen()));
+                        builder: (context) => const NowPlayingScreen()));
                   },
                   leading: QueryArtworkWidget(
                     artworkBorder: BorderRadius.circular(15),

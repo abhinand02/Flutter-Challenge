@@ -53,7 +53,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return MusicPlayerScreen(
+                          return NowPlayingScreen(
                           );
                         },
                       ),

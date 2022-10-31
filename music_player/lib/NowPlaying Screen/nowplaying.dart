@@ -9,15 +9,15 @@ import '../Splash Screen/splashscreen.dart';
 bool isRepeat = false;
 bool isShuffle = false;
 
-class MusicPlayerScreen extends StatefulWidget {
-  const MusicPlayerScreen({
+class NowPlayingScreen extends StatefulWidget {
+  const NowPlayingScreen({
     super.key,
   });
   @override
-  State<MusicPlayerScreen> createState() => _MusicPlayerScreenState();
+  State<NowPlayingScreen> createState() => _NowPlayingScreenState();
 }
 
-class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
+class _NowPlayingScreenState extends State<NowPlayingScreen> {
   final AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
   @override
   Widget build(BuildContext context) {

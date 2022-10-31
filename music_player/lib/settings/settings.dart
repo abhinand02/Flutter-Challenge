@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/constants/style.dart';
 import 'package:music_player/main.dart';
+import 'package:music_player/settings/about.dart';
 import 'package:music_player/settings/privacy_policy.dart';
 import 'package:music_player/settings/terms_conditions.dart';
 import 'package:music_player/widgets/method.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Splash Screen/splashscreen.dart';
 
 bool notificationSwitch = true;
 
@@ -37,14 +40,14 @@ class SettingsScreen extends StatelessWidget {
               SettingTileItems(
                 icon: Icons.info_outline,
                 text: 'About',
-                classname: const PrivacyPolicy(),
+                classname: const About(),
               ),
             ],
           ),
-          Text(
+         const Text(
             'Version \n 1.0 ',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14, color: whiteClr),
+            // style: TextStyle(fontSize: 14,),
           ),
         ],
       ),
@@ -62,7 +65,7 @@ class ShareApp extends StatelessWidget {
     return  Padding(
       padding: const  EdgeInsets.only(left: 8,),
       child:   ListTile(
-          leading:  Icon(Icons.share_outlined,size: 20,color: whiteClr,),
+          leading: const Icon(Icons.share_outlined,size: 20,),
           title:  Text('Share this App',style: textWhite18,),
           onTap: share,
         ),
@@ -85,9 +88,8 @@ class _NotifictionSwitchState extends State<NotifictionSwitch> {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0),
       child: ListTile(
-        leading: Icon(
+        leading:const Icon(
           Icons.notifications_active_outlined,
-          color: whiteClr,
           size: 25,
         ),
         title: Text(
@@ -123,9 +125,8 @@ class _SwitchThemeState extends State<SwitchTheme> {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0),
       child: ListTile(
-        leading: Icon(
+        leading:const Icon(
           Icons.dark_mode_rounded,
-          color: whiteClr,
           size: 25,
         ),
         title: Text(
@@ -136,6 +137,11 @@ class _SwitchThemeState extends State<SwitchTheme> {
           value: isDarkMode,
           onChanged: (value) {
             final themeProvider= Provider.of<ThemeProvider>(context,listen: false);
+            if(isDarkMode == true){
+              clearData();
+            }else{
+              saveData();
+            }
             setState(() {
               isDarkMode = value;
             });
@@ -170,7 +176,6 @@ class SettingTileItems extends StatelessWidget {
       leading: IconButton(
         onPressed: () {},
         icon: Icon(icon),
-        color: whiteClr,
         iconSize: 25,
       ),
       title: Text(
@@ -183,3 +188,12 @@ class SettingTileItems extends StatelessWidget {
 share(){
   Share.share('www.google.com');
 }
+
+Future<void> saveData() async{
+ final sharedpref = await SharedPreferences.getInstance();
+ await sharedpref.setBool('isDarkMode', true);
+  }
+  Future<void> clearData() async{
+ final sharedpref = await SharedPreferences.getInstance();
+ await sharedpref.setBool('isDarkMode', false);
+  }

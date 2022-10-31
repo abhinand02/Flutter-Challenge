@@ -2,12 +2,16 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:music_player/Model/db_functions.dart';
+import 'package:music_player/Model/model.dart';
 import 'package:music_player/constants/style.dart';
 import 'package:music_player/NowPlaying%20Screen/nowplaying.dart';
 import 'package:music_player/widgets/method.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../Home/home_screen.dart';
 import '../Model/favmodel.dart';
+import '../Model/mostplayed_model.dart';
+import '../Model/recentsong_model.dart';
+import '../settings/settings.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
@@ -20,7 +24,7 @@ List<Audio> allsongs = [];
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer.withId('0');
-
+  final dbsongs = SongBox.getInstance().values.toList();
   @override
   void initState() {
     final DBfavsongs = Hive.box<FavSongs>('favsongs').values.toList();
@@ -56,20 +60,33 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               return ListTile(
-                minVerticalPadding: 20,
+                contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                 onTap: () {
-                  // print(allsongs);
-                  playerVisibility = true;
+                  
+                final  rsongs = RecentPlayed(
+                              songname: allfavsongs[index].songname,
+                              artist: allfavsongs[index].artist,
+                              duration: allfavsongs[index].duration,
+                              songurl: allfavsongs[index].songurl,
+                              id: allfavsongs[index].id);
+                          updateRecentlyPlayed(rsongs);
+                          int songIndex = dbsongs.indexWhere((element) => element.songname == allfavsongs[index].songname);
+                          MostPlayed msongs = mostplayedsongs.values.toList()[songIndex];
+                          updatePlayedSongCount(msongs, index);
+
+                  setState(() {
+                    playerVisibility = true;
+                  });
 
                   audioPlayer.open(
                     Playlist(audios: allsongs, startIndex: index),
-                    showNotification: true,
+                    showNotification: notificationSwitch,
                   );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return MusicPlayerScreen(
+                        return const NowPlayingScreen(
                         );
                       },
                     ),
@@ -103,6 +120,19 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     setState(
                       () {
                         favdbsongs.deleteAt(index);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: selectedItemColor,
+                        duration: const Duration(seconds: 1),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        content: Text(
+                            '${allfavsongs[index].songname} Removed from favourites'),
+                      ),
+                    );
                       },
                     );
                   },

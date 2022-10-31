@@ -9,8 +9,8 @@ import 'package:music_player/Model/model.dart';
 import 'package:music_player/Model/mostplayed_model.dart';
 import 'package:music_player/Model/recentsong_model.dart';
 import 'package:music_player/constants/style.dart';
-import 'package:music_player/main.dart';
 import 'package:music_player/NowPlaying%20Screen/nowplaying.dart';
+import 'package:music_player/main.dart';
 import 'package:music_player/settings/settings.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -106,6 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Playlist(audios: allSongs, startIndex: index),
                             showNotification: notificationSwitch,
                             loopMode: LoopMode.playlist,
+                            headPhoneStrategy: HeadPhoneStrategy.pauseOnUnplugPlayOnPlug
                           );
                           // print("this song played  $count times");
                           // print(recentlyplayedbox.values.toList()[index]);
@@ -120,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               if (value == false) {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) =>
-                                       const MusicPlayerScreen())).then((value) => setState((){}));
+                                       const NowPlayingScreen())).then((value) => setState((){}));
                               }
                             },
                           );
@@ -174,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
   AppBar appBar(double height) {
     return AppBar(
       elevation: 1,
-      backgroundColor:isDarkMode ? backGroundColor : whiteClr,
+      // backgroundColor:isDarkMode ? backGroundColor : whiteClr,
       toolbarHeight: height * .5,
       leadingWidth: height * .2,
       leading: const Image(
@@ -185,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               showSearch(context: context, delegate: Search());
             },
-            icon: const Icon(Icons.search_rounded),color: isDarkMode ? whiteClr : blackClr,iconSize: 33,)
+            icon: const Icon(Icons.search_rounded),iconSize: 33,)
       ],
       bottom: TabBar(
         physics: const BouncingScrollPhysics(),

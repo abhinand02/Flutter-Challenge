@@ -5,6 +5,7 @@ import 'package:music_player/main.dart';
 import '../Model/db_functions.dart';
 import '../Model/model.dart';
 import '../Model/playlistmodel.dart';
+import '../Splash Screen/splashscreen.dart';
 
 bool textformVisibility = false;
 
@@ -23,7 +24,7 @@ class HomePlaylistButton extends StatelessWidget {
         playlistBottomSheet(context);
       },
       icon: const Icon(Icons.playlist_add),
-      color: isDarkMode ? whiteClr : blackClr,
+      // color: isDarkMode ? whiteClr : blackClr,
       splashRadius: 20,
     );
   }
@@ -53,9 +54,10 @@ class HomePlaylistButton extends StatelessWidget {
                 }
                 return Column(
                   children: [
+                    height10,
                     Text(
                       'Playlist',
-                      style: textWhite22,
+                      style: TextStyle(fontSize: 22,color: whiteClr),
                     ),
                     Expanded(
                       child: ListView.builder(
@@ -68,7 +70,7 @@ class HomePlaylistButton extends StatelessWidget {
                             ),
                             title: Text(
                               playlist[index].playlistname,
-                              style: textWhite18,
+                              style: TextStyle(fontSize: 18,color: whiteClr),
                             ),
                             onTap: () {
                               PlaylistSongs? plsongs = playlistbox.getAt(index);
@@ -94,7 +96,7 @@ class HomePlaylistButton extends StatelessWidget {
                                     PlaylistSongs(
                                         playlistname:
                                             playlist[index].playlistname,
-                                        playlistsongs: plnewsongs));
+                                        playlistsongs: plnewsongs),);
 
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     backgroundColor: selectedItemColor,
@@ -125,7 +127,7 @@ class HomePlaylistButton extends StatelessWidget {
                           );
                         },
                       ),
-                    )
+                    ),
                   ],
                 );
               },
@@ -147,7 +149,10 @@ class IfNoPlaylist extends StatefulWidget {
 }
 
 class _IfNoPlaylistState extends State<IfNoPlaylist> {
+
   TextEditingController textcontroller = TextEditingController();
+  final formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -157,38 +162,44 @@ class _IfNoPlaylistState extends State<IfNoPlaylist> {
         children: [
           Text(
             textformVisibility ? 'Create Playlist' : 'No Playlists',
-            style: textWhite22,
+            style: TextStyle(fontSize: 22,color: whiteClr),
           ),
           Visibility(
             visible: textformVisibility,
-            child: TextFormField(
-              autofocus: true,
-              controller: textcontroller,
-              cursorHeight: 25,
-              decoration: InputDecoration(
-                hintText: 'Playlist name',
-                hintStyle: text18,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide.none),
-                fillColor: whiteClr,
-                filled: true,
+            child: Form(
+              key: formkey,
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.always,
+                style: TextStyle(color: blackClr,fontSize: 18),
+                autofocus: true,
+                controller: textcontroller,
+                cursorHeight: 25,
+                decoration: InputDecoration(
+                  hintText: 'Playlist name',
+                  hintStyle: text18,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide.none),
+                  fillColor: whiteClr,
+                  filled: true,
+                ),
+                validator: (value) {
+                  List<PlaylistSongs> values = playlistbox.values.toList();
+            
+                  bool isAlreadyAdded = values
+                      .where((element) => element.playlistname == value!.trim())
+                      .isNotEmpty;
+            
+                  if (value!.trim() == '') {
+                    return 'Name Required';
+                  }
+                  if (isAlreadyAdded) {
+                    return 'This Name Already Exist';
+                  }
+                  return null;
+                  
+                },
               ),
-              validator: (value) {
-                List<PlaylistSongs> values = playlistbox.values.toList();
-
-                bool isAlreadyAdded = values
-                    .where((element) => element.playlistname == value!.trim())
-                    .isNotEmpty;
-
-                if (value!.trim() == '') {
-                  return 'Name Required';
-                }
-                if (isAlreadyAdded) {
-                  return 'This Name Already Exist';
-                }
-                return null;
-              },
             ),
           ),
           ElevatedButton.icon(
@@ -216,11 +227,13 @@ class _IfNoPlaylistState extends State<IfNoPlaylist> {
   }
 
   addPlaylist() {
-    playlistbox.add(
+    if(formkey.currentState!.validate()){
+       playlistbox.add(
         PlaylistSongs(playlistname: textcontroller.text, playlistsongs: []));
-    // Navigator.pop(context);
-    setState(() {
+        setState(() {
       textformVisibility = false;
     });
+    } 
+    // Navigator.pop(context); 
   }
 }

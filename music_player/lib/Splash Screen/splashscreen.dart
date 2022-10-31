@@ -6,6 +6,7 @@ import 'package:music_player/Model/model.dart';
 import 'package:music_player/Model/mostplayed_model.dart';
 import 'package:music_player/widgets/bottom_navbar.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import '../Home/artist_screen.dart';
 
 late bool status;
 
@@ -26,7 +27,9 @@ List<Audio> songsList = [];
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    // sharedPreferece();
     requestStoragePremission();
+    getArtist();
     super.initState();
   }
 

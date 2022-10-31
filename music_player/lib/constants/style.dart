@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:music_player/main.dart';
 
 Color backGroundColor =  const Color.fromARGB(255,25, 27, 40);    // App Theme Color
 
@@ -16,11 +15,11 @@ Color miniPlayerclr = const Color.fromRGBO(77, 80, 96,1); // miniPlayer Backgrou
 
 Color greyclr = const Color.fromRGBO(166, 166, 166, 1);   
 
-TextStyle text18 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 18),fontWeight: FontWeight.w600); //common text with fontsize 18 
+TextStyle text18 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 18),fontWeight: FontWeight.w600,); //common text with fontsize 18 
 
-TextStyle textWhite18 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 18),fontWeight: FontWeight.w600,color: isDarkMode ? whiteClr : blackClr);
+TextStyle textWhite18 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 18),fontWeight: FontWeight.w600,);
 
-TextStyle textWhite22 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 22),fontWeight: FontWeight.w600,color:  isDarkMode ? whiteClr : blackClr);
+TextStyle textWhite22 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 22),fontWeight: FontWeight.w600,);
 
 TextStyle textBlack22 =  GoogleFonts.urbanist(textStyle: const TextStyle(fontSize: 22),fontWeight: FontWeight.w900,color: Colors.black);
 

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/Home/songs_by_artists.dart';
+import 'package:music_player/main.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import '../Model/model.dart';
 import '../constants/style.dart';
 import 'home_screen.dart';
-import 'songs_by_artists.dart';
+
 
 class Artist extends StatefulWidget {
   const Artist({
@@ -17,43 +20,19 @@ class Artist extends StatefulWidget {
 }
 
 List<ArtistModel> artistList = [];
-
-class _ArtistState extends State<Artist> {
+List<SongModel> tempsongs = [];
+List<List<Songs>> finalList = [];
+List<String> artistname =[];
+List<Songs> song = [];
   OnAudioQuery fetchartist = OnAudioQuery();
+class _ArtistState extends State<Artist> {
   late int newIndex;
   int count = 0;
   int count1 = 1;
 
-  @override
-  void initState() {
-    getArtist();
-    super.initState();
-  }
-
-  void getArtist() async {
-    artistList = await fetchartist.queryArtists();
-  }
-
-  @override
+ @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<ArtistModel>>(
-      future: fetchartist.queryArtists(),
-      builder: (context, item) {
-        if (item.data == null) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        if (item.data!.isEmpty) {
-          return Center(
-            child: Text(
-              'No Artist Found!',
-              style: textWhite18,
-            ),
-          );
-        }
-        return GridView.builder(
+            return GridView.builder(
           padding: EdgeInsets.only(top: 10, bottom: playerVisibility ? 70 : 0),
           physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
@@ -62,20 +41,18 @@ class _ArtistState extends State<Artist> {
             crossAxisCount: 2,
             childAspectRatio: (1),
           ),
-          itemCount: artistList.length,
+          itemCount: artistname.length,
           itemBuilder: (BuildContext context, int index) {
             return Column(
               children: [
                 GestureDetector(
                   onTap: () {
-                    // print(artistList[index].numberOfTracks);
-
+                    // print(artistList[index].numberOfTracks);                    
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
                           return SongsByArtistScreen(
-                              artistId: artistList[index].id,
-                              artistName: artistList[index].artist);
+                              artistName: artistname[index]);
                         },
                       ),
                     );
@@ -83,7 +60,7 @@ class _ArtistState extends State<Artist> {
                   child: Container(
                     padding:
                         const EdgeInsets.only(top: 10, left: 20, right: 20),
-                    color: backGroundColor,
+                    color: isDarkMode ? backGroundColor : whiteClr,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Image.asset(
@@ -94,18 +71,37 @@ class _ArtistState extends State<Artist> {
                   ),
                 ),
                 Text(
-                  artistList[index].artist.split(',')[0].toString(),
+                  artistname[index],
                   style: textWhite18,
                 ),
-                Text(
-                  'Songs ${artistList[index].numberOfTracks.toString()} ',
-                  style: textgrey18,
-                ),
+                // Text(
+                //   'Songs ${finalList[index]} ',
+                //   style: textgrey18,
+                // ),
               ],
             );
           },
         );
-      },
-    );
   }
 }
+void getArtist() async {
+    artistList = await fetchartist.queryArtists();
+     for(int i=0;i<artistList.length;i++){
+      bool status= false;
+      // tempsongs.clear(); 
+       final temp= await fetchartist.queryAudiosFrom(AudiosFromType.ARTIST_ID, artistList[i].id,);
+       for(int j=0; j<temp.length;j++){
+        if(temp[j].fileExtension == 'mp3'){
+         status=true;
+          // finalList.clear(); 
+          tempsongs.clear();
+        tempsongs.add(temp[j]);
+       }
+       }
+       if(status == true){
+        artistname.add(temp[0].artist!);
+        status=false;
+       }
+     }
+   
+   }

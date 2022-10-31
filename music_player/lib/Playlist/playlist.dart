@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:music_player/Model/model.dart';
 import 'package:music_player/Playlist/songs_by_playlist.dart';
+import 'package:music_player/Splash%20Screen/splashscreen.dart';
 import 'package:music_player/widgets/method.dart';
 import '../Model/db_functions.dart';
 import '../Model/playlistmodel.dart';
 import '../constants/style.dart';
+import '../main.dart';
 
 class PlaylistScreen extends StatefulWidget {
   const PlaylistScreen({super.key});
@@ -15,12 +18,12 @@ class PlaylistScreen extends StatefulWidget {
 
 class _PlaylistScreenState extends State<PlaylistScreen> {
   List<PlaylistSongs> playlists = [];
+  List<Songs> playlistsong = [];
   final formkey = GlobalKey<FormState>();
   TextEditingController textcontroller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: appBar('Playlists'),
       body: ValueListenableBuilder<Box<PlaylistSongs>>(
@@ -41,7 +44,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       child: ListView.builder(
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
-                          TextEditingController textcontroller =
+                          playlistsong = playlists[index].playlistsongs!;
+                          TextEditingController textController =
                               TextEditingController(
                                   text: playlists[index].playlistname);
                           return ListTile(
@@ -66,9 +70,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                               style: textWhite18,
                             ),
                             trailing: PopupMenuButton(
-                              icon: Icon(
+                              color: isDarkMode ? backGroundColor : whiteClr,
+                              icon: const Icon(
                                 Icons.more_vert,
-                                color: whiteClr,
                               ),
                               itemBuilder: (_) => <PopupMenuItem<int>>[
                                 PopupMenuItem(
@@ -96,52 +100,20 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                 switch (selectedindex) {
                                   case 0:
                                     showModalBottomSheet(
-                                      backgroundColor: const Color.fromARGB(255, 23, 23, 24),
+                                      backgroundColor:
+                                          const Color.fromARGB(255, 23, 23, 24),
                                       shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                       ),
-                                        context: context,
-                                        builder: (context) {
-                                          return editBottom(context);
-                                        });
-                                    // showDialog(
-                                    //     context: context,
-                                    //     builder: (context) {
-                                    //       return AlertDialog(
-                                    //         backgroundColor: backGroundColor,
-                                    //         content: TextField(
-                                    //           controller: textcontroller,
-                                    //           decoration: InputDecoration(
-                                    //               fillColor: whiteClr),
-                                    //         ),
-                                    //         actions: [
-                                    //           TextButton(
-                                    //             onPressed: () {
-                                    //               playlistbox.putAt(
-                                    //                   index,
-                                    //                   PlaylistSongs(
-                                    //                       playlistname:
-                                    //                           textcontroller.text,
-                                    //                       playlistsongs: []));
-                                    //               Navigator.pop(context);
-                                    //             },
-                                    //             child: Text(
-                                    //               'Save',
-                                    //               style: textWhite18,
-                                    //             ),
-                                    //           ),
-                                    //           TextButton(
-                                    //             onPressed: () {
-                                    //               Navigator.pop(context);
-                                    //             },
-                                    //             child: Text(
-                                    //               'No',
-                                    //               style: textWhite18,
-                                    //             ),
-                                    //           ),
-                                    //         ],
-                                    //       );
-                                    //     });
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      context: context,
+                                      builder: (context) {
+                                        return editBottom(
+                                            context,
+                                            textController,
+                                            index,
+                                            playlistsong);
+                                      },
+                                    );
                                     break;
                                   case 1:
                                     showDialog(
@@ -151,7 +123,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                           backgroundColor: backGroundColor,
                                           content: Text(
                                             'Do you want to delete ?',
-                                            style: textWhite18,
+                                            style: TextStyle(
+                                                color: whiteClr, fontSize: 18),
                                           ),
                                           actions: [
                                             TextButton(
@@ -161,7 +134,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                               },
                                               child: Text(
                                                 'Yes',
-                                                style: textWhite18,
+                                                style: TextStyle(
+                                                    color: whiteClr,
+                                                    fontSize: 18),
                                               ),
                                             ),
                                             TextButton(
@@ -170,7 +145,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                               },
                                               child: Text(
                                                 'No',
-                                                style: textWhite18,
+                                                style: TextStyle(
+                                                    color: whiteClr,
+                                                    fontSize: 18),
                                               ),
                                             ),
                                           ],
@@ -216,55 +193,112 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     );
   }
 
-Widget editBottom(BuildContext context){
-  double width = MediaQuery.of(context).size.width;
-  return Padding(
-                                            padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context).viewInsets.bottom + 10),
-                                            child: Container(
-                                              height: width * .7,
+  Widget editBottom(BuildContext context, TextEditingController textcontroller,
+      int index, List<Songs> playlistsong) {
+    double width = MediaQuery.of(context).size.width;
+    return Padding(
+      padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+          left: 10,
+          right: 10,
+          top: 20),
+      child: Container(
+        height: width * .7,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(20),
           ),
           color: Color.fromARGB(255, 23, 23, 24),
         ),
-                                              child: TextFormField(
-                                                autofocus: true,
-                                                controller: textcontroller,
-                                                cursorHeight: 25,
-                                                decoration: InputDecoration(
-                                                  hintText: 'Playlist name',
-                                                  hintStyle: text18,
-                                                  border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(20),
-                                                      borderSide: BorderSide.none),
-                                                  fillColor: whiteClr,
-                                                  filled: true,
-                                                ),
-                                                validator: (value) {
-                                                  List<PlaylistSongs> values =
-                                                      playlistbox.values.toList();
-
-                                                  bool isAlreadyAdded = values
-                                                      .where((element) =>
-                                                          element.playlistname ==
-                                                          value!.trim())
-                                                      .isNotEmpty;
-
-                                                  if (value!.trim() == '') {
-                                                    return 'Name Required';
-                                                  }
-                                                  if (isAlreadyAdded) {
-                                                    return 'This Name Already Exist';
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                            ),
-                                          );
-}
+        child: Column(
+          children: [
+            Text(
+              'Edit Playlist',
+              style: TextStyle(fontSize: 22, color: whiteClr),
+            ),
+            height10,
+            Form(
+              key: formkey,
+              child: TextFormField(
+                style: TextStyle(color: blackClr, fontSize: 18),
+                autofocus: true,
+                controller: textcontroller,
+                cursorHeight: 25,
+                decoration: InputDecoration(
+                  hintText: 'Playlist name',
+                  hintStyle: TextStyle(fontSize: 18, color: blackClr),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide.none),
+                  fillColor: whiteClr,
+                  filled: true,
+                ),
+                validator: (value) {
+            
+                  // bool isAlreadyAdded = values
+                  //     .where((element) => element.playlistname == value!.trim())
+                  //     .isNotEmpty;
+            
+                  if (value!.trim() == '') {
+                    return 'Name Required';
+                  }
+                  // if (isAlreadyAdded) {
+                  //   return 'This Name Already Exist';
+                  // }
+                  return null;
+                },
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      backgroundColor: selectedItemColor),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      'Cancel',
+                      style: textWhite18,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if(formkey.currentState!.validate()){
+                      playlistbox.putAt(
+                        index,
+                        PlaylistSongs(
+                            playlistname: textcontroller.text,
+                            playlistsongs: playlistsong),
+                            );
+                            Navigator.pop(context);
+                    }
+                    textcontroller.clear();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    backgroundColor: selectedItemColor,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      'Edit',
+                      style: text18,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget bottomSheet(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -298,38 +332,42 @@ Widget editBottom(BuildContext context){
       children: [
         Text(
           'Create Playlist',
-          style: textWhite22,
+          style: TextStyle(color: whiteClr, fontSize: 22),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
-          child: TextFormField(
-            autofocus: true,
-            controller: textcontroller,
-            cursorHeight: 25,
-            decoration: InputDecoration(
-              hintText: 'Playlist name',
-              hintStyle: text18,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none),
-              fillColor: whiteClr,
-              filled: true,
+          child: Form(
+            key: formkey,
+            child: TextFormField(
+              style: TextStyle(color: blackClr, fontSize: 18),
+              autofocus: true,
+              controller: textcontroller,
+              cursorHeight: 25,
+              decoration: InputDecoration(
+                hintText: 'Playlist name',
+                hintStyle: text18,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none),
+                fillColor: whiteClr,
+                filled: true,
+              ),
+              validator: (value) {
+                List<PlaylistSongs> values = playlistbox.values.toList();
+          
+                bool isAlreadyAdded = values
+                    .where((element) => element.playlistname == value!.trim())
+                    .isNotEmpty;
+          
+                if (value!.trim() == '') {
+                  return 'Name Required';
+                }
+                if (isAlreadyAdded) {
+                  return 'This Name Already Exist';
+                }
+                return null;
+              },
             ),
-            validator: (value) {
-              List<PlaylistSongs> values = playlistbox.values.toList();
-
-              bool isAlreadyAdded = values
-                  .where((element) => element.playlistname == value!.trim())
-                  .isNotEmpty;
-
-              if (value!.trim() == '') {
-                return 'Name Required';
-              }
-              if (isAlreadyAdded) {
-                return 'This Name Already Exist';
-              }
-              return null;
-            },
           ),
         ),
         formButtons(context)
@@ -357,10 +395,12 @@ Widget editBottom(BuildContext context){
         ),
         ElevatedButton(
           onPressed: () {
-            playlistbox.add(PlaylistSongs(
+            if(formkey.currentState!.validate()){
+              playlistbox.add(PlaylistSongs(
                 playlistname: textcontroller.text, playlistsongs: []));
             Navigator.pop(context);
-            textcontroller.clear();
+            } 
+           textcontroller.clear();
           },
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),

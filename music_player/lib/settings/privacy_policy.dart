@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:music_player/Splash%20Screen/splashscreen.dart';
+import 'package:music_player/constants/style.dart';
+import 'package:music_player/main.dart';
 
 class PrivacyPolicy extends StatelessWidget {
   const PrivacyPolicy({super.key});
@@ -17,9 +20,9 @@ class PrivacyPolicy extends StatelessWidget {
                   data: snapshot.data!,
                   styleSheet: MarkdownStyleSheet.fromTheme(
                     ThemeData(
-                        textTheme: const TextTheme(
+                        textTheme:  TextTheme(
                             bodyText2:
-                                TextStyle(color: Colors.white, fontSize: 18))),
+                                TextStyle(fontSize: 18,color:  isDarkMode ? whiteClr : blackClr),)),
                   ));
             }
             return const CircularProgressIndicator();

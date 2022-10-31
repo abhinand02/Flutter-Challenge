@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/main.dart';
 import '../Model/db_functions.dart';
 import '../Model/favmodel.dart';
 import '../Model/model.dart';
@@ -69,9 +68,8 @@ class _FavIconsState extends State<FavIcons> {
                     // print(dbSongs[widget.index].songname);
                     // print(favdbsongs.values.toList());
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.favorite_outline_rounded,
-                    color: isDarkMode ? whiteClr : blackClr,
                   ),
                   splashRadius: 15,
                 )
