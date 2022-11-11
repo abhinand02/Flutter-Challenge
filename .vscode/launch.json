@@ -1,0 +1,174 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "camera_app",
+            "cwd": "camera_app",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "camera_app (profile mode)",
+            "cwd": "camera_app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "camera_app (release mode)",
+            "cwd": "camera_app",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "login_and_home_page",
+            "cwd": "login_and_home_page",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "login_and_home_page (profile mode)",
+            "cwd": "login_and_home_page",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "login_and_home_page (release mode)",
+            "cwd": "login_and_home_page",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "music_player",
+            "cwd": "music_player",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "music_player (profile mode)",
+            "cwd": "music_player",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "music_player (release mode)",
+            "cwd": "music_player",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "program1",
+            "cwd": "program1",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "promble1_ui",
+            "cwd": "promble1_ui",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "promble1_ui (profile mode)",
+            "cwd": "promble1_ui",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "promble1_ui (release mode)",
+            "cwd": "promble1_ui",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "sample",
+            "cwd": "sample",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "sample (profile mode)",
+            "cwd": "sample",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "sample (release mode)",
+            "cwd": "sample",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "students_record",
+            "cwd": "students_record",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "students_record (profile mode)",
+            "cwd": "students_record",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "students_record (release mode)",
+            "cwd": "students_record",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "student_records_sqldb",
+            "cwd": "student_records_sqldb",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "student_records_sqldb (profile mode)",
+            "cwd": "student_records_sqldb",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "student_records_sqldb (release mode)",
+            "cwd": "student_records_sqldb",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "ui_design",
+            "cwd": "ui_design",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ui_design (profile mode)",
+            "cwd": "ui_design",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ui_design (release mode)",
+            "cwd": "ui_design",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

@@ -4,12 +4,16 @@ import 'package:provider/provider.dart';
 import 'home.dart';
 import 'model/model.dart';
 
+late  bool isDark;
 Future<void> main() async {
+ 
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
   Hive.registerAdapter(SongsAdapter());
   await Hive.openBox<Songs>('Songs');
+
+  
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(

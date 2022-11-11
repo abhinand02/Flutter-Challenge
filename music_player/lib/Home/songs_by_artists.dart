@@ -2,7 +2,6 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/constants/style.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import '../Favourite/favourite_function.dart';
 import '../NowPlaying Screen/nowplaying.dart';
 import '../settings/settings.dart';
 import '../widgets/mini_player.dart';

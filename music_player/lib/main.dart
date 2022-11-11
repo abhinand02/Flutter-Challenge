@@ -8,7 +8,6 @@ import 'package:music_player/Model/playlistmodel.dart';
 import 'package:music_player/Model/recentsong_model.dart';
 import 'package:music_player/constants/style.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'Splash Screen/splashscreen.dart';
 
 
@@ -47,15 +46,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-  sharedPreferece();
+  // sharedPreferece();
     super.initState();
   }
-  sharedPreferece() async{
-  final sharedpref = await SharedPreferences.getInstance();
-   final isDark = sharedpref.getBool('isDarkMode');
-  isDarkMode = isDark!;
-  print(isDarkMode);
-  }
+  // sharedPreferece() async{
+  // final sharedpref = await SharedPreferences.getInstance();
+  //  final isDark = sharedpref.getBool('isDarkMode');
+  // isDarkMode = isDark!;
+  // print(isDarkMode);
+  // }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -67,7 +66,7 @@ class _MyAppState extends State<MyApp> {
         iconTheme: IconThemeData(color: whiteClr),
           backgroundColor: backGroundColor,
           toolbarTextStyle: TextStyle(color: whiteClr)),
-      textTheme: Theme.of(context).textTheme.apply(bodyColor: whiteClr,),
+      textTheme: Theme.of(context).textTheme.apply(bodyColor: whiteClr),
       sliderTheme: const SliderThemeData(trackHeight: 2),
       listTileTheme: ListTileThemeData(
         iconColor: whiteClr,

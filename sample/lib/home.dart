@@ -16,7 +16,6 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player> {
-  bool isDark = false;
   final box = SongBox.getInstance();
 
   List<Audio> convertAudios = [];

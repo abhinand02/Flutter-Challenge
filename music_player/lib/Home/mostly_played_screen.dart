@@ -1,6 +1,7 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:music_player/Home/home_screen.dart';
 import 'package:music_player/Model/recentsong_model.dart';
 import 'package:music_player/Playlist/homeplaylistbutton.dart';
 import 'package:music_player/NowPlaying%20Screen/nowplaying.dart';
@@ -9,6 +10,7 @@ import '../Model/db_functions.dart';
 import '../Model/mostplayed_model.dart';
 import '../constants/style.dart';
 import '../settings/settings.dart';
+import '../widgets/mini_player.dart';
 
 class MostlyPlayedScreen extends StatefulWidget {
   const MostlyPlayedScreen({super.key});
@@ -65,6 +67,11 @@ class _MostlyPlayedScreenState extends State<MostlyPlayedScreen> {
                       Playlist(audios: songs, startIndex: index),
                       showNotification: notificationSwitch,
                     );
+
+                    setState(() {
+                      playerVisibility=true;
+                      isPlaying = true;
+                    });
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const NowPlayingScreen()));
                   },

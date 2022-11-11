@@ -71,7 +71,8 @@ class _ArtistState extends State<Artist> {
                   ),
                 ),
                 Text(
-                  artistname[index],
+                  artistname[index].split(',').toList()[0],
+                  textAlign: TextAlign.center,
                   style: textWhite18,
                 ),
                 // Text(

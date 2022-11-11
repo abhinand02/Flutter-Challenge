@@ -12,6 +12,7 @@ import '../Model/favmodel.dart';
 import '../Model/mostplayed_model.dart';
 import '../Model/recentsong_model.dart';
 import '../settings/settings.dart';
+import '../widgets/mini_player.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
@@ -76,6 +77,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
                   setState(() {
                     playerVisibility = true;
+                    isPlaying = true;
                   });
 
                   audioPlayer.open(

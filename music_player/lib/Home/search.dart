@@ -4,13 +4,26 @@ import 'package:music_player/Model/model.dart';
 import 'package:music_player/constants/style.dart';
 import 'package:music_player/NowPlaying%20Screen/nowplaying.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
 import '../Model/db_functions.dart';
 import '../Model/mostplayed_model.dart';
 import '../Model/recentsong_model.dart';
 import '../settings/settings.dart';
 
 class Search extends SearchDelegate {
+@override
+  ThemeData appBarTheme(BuildContext context) {
+  return ThemeData(
+    scaffoldBackgroundColor: backGroundColor,
+    primaryColor: whiteClr,
+    appBarTheme: AppBarTheme(backgroundColor: backGroundColor),
+    textTheme: Theme.of(context).textTheme.apply(bodyColor: whiteClr),
+    primaryIconTheme: IconThemeData(
+      color: whiteClr,
+    ),
+    inputDecorationTheme: InputDecorationTheme(labelStyle:textWhite18,hintStyle: TextStyle(color: whiteClr,),border: InputBorder.none
+    ),
+  );
+}
   @override
   Widget? buildLeading(BuildContext context) => IconButton(
       onPressed: () {
@@ -21,7 +34,7 @@ class Search extends SearchDelegate {
   @override
   List<Widget>? buildActions(BuildContext context) {
     IconButton(
-        icon: const Icon(Icons.close_rounded),
+        icon:  Icon(Icons.close_rounded,color: blackClr,),
         onPressed: () {
           if (query.isEmpty) {
             close(context, null);
@@ -84,7 +97,6 @@ Widget searchResults(List<Songs> song) {
             if (!currentFocus.hasPrimaryFocus) {
               currentFocus.unfocus();
             }
-
             final rsongs = RecentPlayed(
                 songname: song[index].songname,
                 artist: song[index].artist,

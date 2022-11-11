@@ -1,11 +1,13 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:music_player/Home/home_screen.dart';
 import 'package:music_player/Model/db_functions.dart';
 import 'package:music_player/Model/playlistmodel.dart';
 import 'package:music_player/NowPlaying%20Screen/nowplaying.dart';
 import 'package:music_player/Playlist/addtoPlaylist.dart';
 import 'package:music_player/widgets/method.dart';
+import 'package:music_player/widgets/mini_player.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../Model/model.dart';
 import '../constants/style.dart';
@@ -95,6 +97,10 @@ class _SongsByPlaylistScreenState extends State<SongsByPlaylistScreen> {
                       Playlist(audios: plstsongs, startIndex: index),
                       showNotification: notificationSwitch,
                     );
+                    setState(() {
+                      playerVisibility= true;
+                      isPlaying=true;
+                    });
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const NowPlayingScreen()));
                   },

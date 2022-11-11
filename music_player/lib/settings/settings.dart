@@ -8,7 +8,6 @@ import 'package:music_player/widgets/method.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Splash Screen/splashscreen.dart';
 
 bool notificationSwitch = true;
 
